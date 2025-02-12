@@ -1,5 +1,7 @@
 const districtSelect = document.getElementById("districtSelect");
+const loader = document.getElementById("loader");
 
+// Add 64 districts dynamically
 const districts = {
     "Bagerhat": { lat: 22.6581, lon: 89.7850 },
     "Bandarban": { lat: 22.1953, lon: 92.2184 },
@@ -71,7 +73,11 @@ Object.keys(districts).forEach(district => {
     districtSelect.add(option);
 });
 
+// Function to fetch prayer times
 function fetchPrayerTimes(lat, lon, locationName) {
+    loader.style.display = "block";
+    document.getElementById("timingDisplay").style.display = "none";
+
     const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=Bangladesh&method=2`;
 
     fetch(url)
@@ -91,9 +97,14 @@ function fetchPrayerTimes(lat, lon, locationName) {
                 alert("Error fetching prayer times.");
             }
         })
-        .catch(error => console.log("Error fetching data:", error));
+        .catch(error => console.log("Error fetching data:", error))
+        .finally(() => {
+            loader.style.display = "none";
+            document.getElementById("timingDisplay").style.display = "block";
+        });
 }
 
+// Function to fetch timings by selected district
 function fetchTimingsByDistrict() {
     let selectedDistrict = districtSelect.value;
     if (selectedDistrict) {
@@ -102,8 +113,10 @@ function fetchTimingsByDistrict() {
     }
 }
 
+// Function to get user location
 function getUserLocation() {
     if (navigator.geolocation) {
+        loader.style.display = "block";
         navigator.geolocation.getCurrentPosition(position => {
             let lat = position.coords.latitude;
             let lon = position.coords.longitude;
@@ -111,17 +124,26 @@ function getUserLocation() {
             fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
                 .then(response => response.json())
                 .then(data => {
-                    let districtName = data.address.building + " " + data.address.city || data.address.town || data.address.village || "Your Location";
+                    let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
                     document.getElementById("locationName").textContent = districtName;
                     fetchPrayerTimes(lat, lon, districtName);
                 })
                 .catch(error => {
                     console.error("Error getting location details:", error);
                     fetchPrayerTimes(lat, lon, "Your Location");
-                });
+                })
+                .finally(() => loader.style.display = "none");
         }, () => alert("Geolocation access denied."));
     } else {
         alert("Geolocation is not supported by your browser.");
     }
 }
 
+// Function to update date & time dynamically
+function updateDateTime() {
+    const now = new Date();
+    document.getElementById("datetime").innerHTML = `
+        <h5>${now.toLocaleDateString()} | ${now.toLocaleTimeString()}</h5>
+    `;
+}
+setInterval(updateDateTime, 1000);
