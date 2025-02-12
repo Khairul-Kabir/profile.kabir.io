@@ -1,5 +1,6 @@
 const districtSelect = document.getElementById("districtSelect");
 const loader = document.getElementById("loader");
+getUserLocation();
 
 // Add 64 districts dynamically
 const districts = {
@@ -93,6 +94,9 @@ function fetchPrayerTimes(lat, lon, locationName) {
                 document.getElementById("asrTime").textContent = timings.Asr;
                 document.getElementById("maghribTime").textContent = timings.Maghrib;
                 document.getElementById("ishaTime").textContent = timings.Isha;
+
+                updateCurrentPrayer(timings);
+
             } else {
                 alert("Error fetching prayer times.");
             }
@@ -102,6 +106,49 @@ function fetchPrayerTimes(lat, lon, locationName) {
             loader.style.display = "none";
             document.getElementById("timingDisplay").style.display = "block";
         });
+}
+
+// Update Current Prayer & Countdown
+function updateCurrentPrayer(timings) {
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+
+    const prayerTimes = [
+        { name: "Fajr", time: timings.Fajr },
+        { name: "Dhuhr", time: timings.Dhuhr },
+        { name: "Asr", time: timings.Asr },
+        { name: "Maghrib", time: timings.Maghrib },
+        { name: "Isha", time: timings.Isha },
+    ];
+
+    let currentPrayer = "Waiting...";
+    let nextPrayer = null;
+
+    for (let i = 0; i < prayerTimes.length; i++) {
+        let [h, m] = prayerTimes[i].time.split(":").map(Number);
+        let prayerTimeInMinutes = h * 60 + m;
+
+        if (currentTime < prayerTimeInMinutes) {
+            nextPrayer = prayerTimes[i];
+            break;
+        } else {
+            currentPrayer = prayerTimes[i].name;
+        }
+    }
+
+    document.getElementById("currentPrayer").textContent = `Ongoing: ${currentPrayer}`;
+    
+    if (nextPrayer) {
+        let [h, m] = nextPrayer.time.split(":").map(Number);
+        let nextPrayerTime = h * 60 + m;
+        let countdown = nextPrayerTime - currentTime;
+        
+        let hours = Math.floor(countdown / 60);
+        let minutes = countdown % 60;
+        document.getElementById("countdown").textContent = `${hours}h ${minutes}m`;
+    } else {
+        document.getElementById("countdown").textContent = "Next: Fajr";
+    }
 }
 
 // Function to fetch timings by selected district

@@ -28,16 +28,36 @@
         </div>
 
         <!-- Prayer Time Display -->
-        <div id="timingDisplay" class="mosque-door mt-4">
-            <h4 id="locationName" class="text-light"></h4>
-            <p class="text-light"><strong>Sehri Ends:</strong> <span id="sehriTime">-</span></p>
-            <p class="text-light"><strong>Iftar Time:</strong> <span id="iftarTime">-</span></p>
-            <h5 class="text-light">Prayer Timings:</h5>
-            <p class="text-light">Fajr: <span id="fajrTime">-</span></p>
-            <p class="text-light">Dhuhr: <span id="dhuhrTime">-</span></p>
-            <p class="text-light">Asr: <span id="asrTime">-</span></p>
-            <p class="text-light">Maghrib: <span id="maghribTime">-</span></p>
-            <p class="text-light">Isha: <span id="ishaTime">-</span></p>
+        <div id="timingDisplay" class="row">
+            <div class="col-md-12 mosque-door mt-4">
+                <h4 id="locationName">-</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mosque-door mt-4">
+                <h5 class="text-warning" id="currentPrayer">Loading...</h5>
+                <h5 class="text-warning"><span id="countdown"></span></h5>
+            </div>
+            <div class="col-md-6 mosque-door mt-4">
+                <h4 id="locationName" class="text-light"></h4>
+                <h5 class="text-warning">Prayer Timings:</h5>
+                <p class="text-light">Fajr: <span id="fajrTime">-</span></p>
+                <p class="text-light">Dhuhr: <span id="dhuhrTime">-</span></p>
+                <p class="text-light">Asr: <span id="asrTime">-</span></p>
+                <p class="text-light">Maghrib: <span id="maghribTime">-</span></p>
+                <p class="text-light">Isha: <span id="ishaTime">-</span></p>
+            </div>
+        </div>
+        <div class="row mosque-door mt-4">
+            <div class="col-md-4">
+                <p class="text-light"><strong>Sehri Ends:</strong> <span id="sehriTime">-</span></p>
+            </div>
+            <div class="col-md-4">
+                <p class="text-light"><strong>Iftar Time:</strong> <span id="iftarTime">-</span></p>
+            </div>
+            <div class="col-md-4">
+                <p class="text-light"><strong>Sehri Countdown:</strong> <span id="sehriTimeCountdown">-</span></p>
+            </div>
         </div>
     </div>
 
