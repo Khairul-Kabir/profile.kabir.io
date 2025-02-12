@@ -1,5 +1,5 @@
 body {
-    background: url('https://source.unsplash.com/1600x900/?mosque,ramadan') no-repeat center center fixed;
+    /* background: url('https://source.unsplash.com/1600x900/?mosque,ramadan') no-repeat center center fixed; */
     background-size: cover;
     font-family: Arial, sans-serif;
 }
@@ -20,7 +20,7 @@ body {
 }
 
 .mosque-door {
-    background: url('https://source.unsplash.com/400x400/?mosque-door') no-repeat center;
+    /* background: url('https://source.unsplash.com/400x400/?mosque-door') no-repeat center; */
     background-size: cover;
     padding: 30px;
     border-radius: 15px;

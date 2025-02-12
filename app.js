@@ -130,6 +130,9 @@ function updateCurrentPrayer(timings) {
 
         if (currentTime < prayerTimeInMinutes) {
             nextPrayer = prayerTimes[i];
+            if(i==0){
+                currentPrayer = prayerTimes[prayerTimes.length-1].name;
+            }
             break;
         } else {
             currentPrayer = prayerTimes[i].name;
@@ -145,7 +148,7 @@ function updateCurrentPrayer(timings) {
         
         let hours = Math.floor(countdown / 60);
         let minutes = countdown % 60;
-        document.getElementById("countdown").textContent = `${hours}h ${minutes}m`;
+        document.getElementById("countdown").textContent = `${nextPrayer.name} After : ${hours}h ${minutes}m`;
     } else {
         document.getElementById("countdown").textContent = "Next: Fajr";
     }
