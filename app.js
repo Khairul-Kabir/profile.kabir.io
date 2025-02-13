@@ -86,6 +86,7 @@ function fetchPrayerTimes(lat, lon, locationName) {
         .then(data => {
             if (data.code === 200) {
                 const timings = data.data.timings;
+                const hijriDate = data.data.date.hijri;
                 document.getElementById("locationName").textContent = locationName;
                 document.getElementById("sehriTime").textContent = timings.Fajr;
                 document.getElementById("iftarTime").textContent = timings.Maghrib;
@@ -94,6 +95,9 @@ function fetchPrayerTimes(lat, lon, locationName) {
                 document.getElementById("asrTime").textContent = timings.Asr;
                 document.getElementById("maghribTime").textContent = timings.Maghrib;
                 document.getElementById("ishaTime").textContent = timings.Isha;
+
+                document.getElementById("arabicAatetime").textContent = `${hijriDate.date} (${hijriDate.weekday.ar}, ${hijriDate.month.ar}) (${hijriDate.weekday.en}, ${hijriDate.month.en})`;
+
 
                 updateCurrentPrayer(timings);
 
@@ -176,6 +180,7 @@ function getUserLocation() {
                 .then(data => {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
                     document.getElementById("locationName").textContent = districtName;
+                    document.getElementById("detailAddress").textContent = data.display_name;
                     fetchPrayerTimes(lat, lon, districtName);
                 })
                 .catch(error => {
