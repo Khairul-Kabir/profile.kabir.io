@@ -179,7 +179,7 @@ function getUserLocation() {
                 .then(response => response.json())
                 .then(data => {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
-                    document.getElementById("locationName").textContent = districtName;
+                    document.getElementById("districtSelect").value = districtName;
                     document.getElementById("detailAddress").textContent = data.display_name;
                     fetchPrayerTimes(lat, lon, districtName);
                 })

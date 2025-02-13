@@ -40,3 +40,6 @@ button {
 select {
     font-weight: bold;
 }
+.flow{
+    display: flow-root!important;
+}
