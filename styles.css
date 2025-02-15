@@ -43,3 +43,9 @@ select {
 .flow{
     display: flow-root!important;
 }
+.text-light {
+    font-size: 16px;
+}
+.fa {
+    margin-right: 5px;
+}

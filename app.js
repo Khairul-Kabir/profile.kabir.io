@@ -95,8 +95,10 @@ function fetchPrayerTimes(lat, lon, locationName) {
                 document.getElementById("asrTime").textContent = timings.Asr;
                 document.getElementById("maghribTime").textContent = timings.Maghrib;
                 document.getElementById("ishaTime").textContent = timings.Isha;
+                document.getElementById("sunriseTime").textContent = timings.Sunrise;
+                document.getElementById("sunsetTime").textContent = timings.Sunset;
 
-                document.getElementById("arabicAatetime").textContent = `${hijriDate.date} (${hijriDate.weekday.ar}, ${hijriDate.month.ar}) (${hijriDate.weekday.en}, ${hijriDate.month.en})`;
+                document.getElementById("arabicDatetime").innerHTML = `${hijriDate.date} <br> (${hijriDate.weekday.ar}, ${hijriDate.month.ar}) (${hijriDate.weekday.en}, ${hijriDate.month.en})`;
 
 
                 updateCurrentPrayer(timings);
@@ -118,43 +120,46 @@ function updateCurrentPrayer(timings) {
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
     const prayerTimes = [
-        { name: "Fajr", time: timings.Fajr },
-        { name: "Dhuhr", time: timings.Dhuhr },
-        { name: "Asr", time: timings.Asr },
-        { name: "Maghrib", time: timings.Maghrib },
-        { name: "Isha", time: timings.Isha },
+        { name: "Fajr", start: timings.Fajr, end: timings.Sunrise },  // Ends at sunrise
+        { name: "Dhuhr", start: timings.Dhuhr, end: timings.Asr },
+        { name: "Asr", start: timings.Asr, end: timings.Maghrib },
+        { name: "Maghrib", start: timings.Maghrib, end: timings.Isha },
+        { name: "Isha", start: timings.Isha, end: "23:59" } // Ends at midnight or Fajr
     ];
 
     let currentPrayer = "Waiting...";
     let nextPrayer = null;
+    let nextPrayerTime = null;
 
     for (let i = 0; i < prayerTimes.length; i++) {
-        let [h, m] = prayerTimes[i].time.split(":").map(Number);
-        let prayerTimeInMinutes = h * 60 + m;
+        let [startH, startM] = prayerTimes[i].start.split(":").map(Number);
+        let startTimeInMinutes = startH * 60 + startM;
 
-        if (currentTime < prayerTimeInMinutes) {
-            nextPrayer = prayerTimes[i];
-            if(i==0){
-                currentPrayer = prayerTimes[prayerTimes.length-1].name;
+        let [endH, endM] = prayerTimes[i].end.split(":").map(Number);
+        let endTimeInMinutes = endH * 60 + endM;
+
+        if (currentTime < startTimeInMinutes) {
+            nextPrayer = prayerTimes[i].name;
+            nextPrayerTime = startTimeInMinutes;
+            if (i == 0) {
+                currentPrayer = prayerTimes[prayerTimes.length - 1].name; // Last prayer (Isha) for early morning
             }
             break;
-        } else {
+        } else if (currentTime >= startTimeInMinutes && currentTime < endTimeInMinutes) {
             currentPrayer = prayerTimes[i].name;
+            break;
         }
     }
 
-    document.getElementById("currentPrayer").textContent = `Ongoing: ${currentPrayer}`;
-    
-    if (nextPrayer) {
-        let [h, m] = nextPrayer.time.split(":").map(Number);
-        let nextPrayerTime = h * 60 + m;
-        let countdown = nextPrayerTime - currentTime;
-        
-        let hours = Math.floor(countdown / 60);
-        let minutes = countdown % 60;
-        document.getElementById("countdown").textContent = `${nextPrayer.name} After : ${hours}h ${minutes}m`;
-    } else {
-        document.getElementById("countdown").textContent = "Next: Fajr";
+    document.getElementById("currentPrayer").textContent = currentPrayer;
+    document.getElementById("nextPrayer").textContent = nextPrayer ? nextPrayer : "Fajr";
+    document.getElementById("nextPrayerTime").textContent = nextPrayerTime ? prayerTimes.find(p => p.name === nextPrayer).start : timings.Fajr;
+
+    // Displaying the start and end time of the current prayer
+    let activePrayer = prayerTimes.find(p => p.name === currentPrayer);
+    if (activePrayer) {
+        document.getElementById("currentPrayerStart").textContent = activePrayer.start;
+        document.getElementById("currentPrayerEnd").textContent = activePrayer.end;
     }
 }
 
@@ -198,7 +203,7 @@ function getUserLocation() {
 function updateDateTime() {
     const now = new Date();
     document.getElementById("datetime").innerHTML = `
-        <h5>${now.toLocaleDateString()} | ${now.toLocaleTimeString()}</h5>
+        <span>${now.toLocaleDateString()} | ${now.toLocaleTimeString()}</span>
     `;
 }
 setInterval(updateDateTime, 1000);

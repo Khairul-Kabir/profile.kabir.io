@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,24 @@
 
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="background-overlay"></div>
     <div class="container mt-4">
         <h2 class="text-center text-light">Islamic Life</h2>
 
-        <div id="datetime" class="text-center text-light mt-2"></div>
-        <div id="arabicAatetime" class="text-center text-light mt-2"></div>
+        <div class="d-flex justify-content-between text-light mt-2">
+            <div>
+                <div id="datetime"></div>
+                <div id="arabicDatetime"></div>
+            </div>
+            <div>
+                <i class="fa fa-sun text-warning"></i> Sunrise: <span id="sunriseTime"></span>
+                <br>
+                <i class="fa fa-moon text-primary"></i> Sunset: <span id="sunsetTime"></span>
+            </div>
+        </div>
+        
 
         <div class="d-flex justify-content-center">
             <select id="districtSelect" class="form-select w-50" onchange="fetchTimingsByDistrict()">
@@ -24,7 +36,8 @@
             <!-- <h4 class="text-light" id="locationName">-</h4> -->
         </div>
         <div class="d-flex justify-content-center flow">
-            <button class="btn btn-outline-light"> <i class="fa fa-map-marker text-warning" aria-hidden="true" onclick="getUserLocation()"></i></button>
+            <button class="btn btn-outline-light"> <i class="fa fa-map-marker text-warning" aria-hidden="true"
+                    onclick="getUserLocation()"></i></button>
             <small class="text-light" id="detailAddress"></small>
         </div>
         <!-- Loader -->
@@ -35,13 +48,18 @@
 
         <!-- Prayer Time Display -->
         <div class="d-flex justify-content-between">
-            <div class="col-md-5 mosque-door mt-4" id="timingDisplay">
+            <div class="col-md-5 mosque-door mt-4 text-left" id="timingDisplay">
+                <p>Current Prayer: <span id="currentPrayer"></span></p>
+                <p>Start Time: <span id="currentPrayerStart"></span></p>
+                <p>End Time: <span id="currentPrayerEnd"></span></p>
+                <p>Next Prayer: <span id="nextPrayer"></span> at <span id="nextPrayerTime"></span></p>
+
+                <!-- 
                 <h5 class="text-warning" id="currentPrayer">Loading...</h5>
-                <h5 class="text-warning"><span id="countdown"></span></h5>
+                <h5 class="text-warning"><span id="countdown"></span></h5> -->
             </div>
             <div class="col-md-5 mosque-door mt-4" id="timingDisplay">
-                <h4 id="locationName" class="text-light"></h4>
-                <h5 class="text-warning">Prayer Timings:</h5>
+                <h4 id="locationName" class="text-light" style="display: none;"></h4>
                 <p class="text-light">Fajr: <span id="fajrTime">-</span></p>
                 <p class="text-light">Dhuhr: <span id="dhuhrTime">-</span></p>
                 <p class="text-light">Asr: <span id="asrTime">-</span></p>
@@ -64,4 +82,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>
