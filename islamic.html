@@ -30,8 +30,15 @@
         
 
         <div class="d-flex justify-content-center">
-            <select id="districtSelect" class="form-select w-50" onchange="fetchTimingsByDistrict()">
+            <select id="districtSelect" class="form-select" onchange="fetchTimingsByDistrict()">
                 <option value="">District</option>
+            </select>
+            <select id="methodSelect" class="form-select" onchange="fetchSelectedPrayerTimes()">
+                <option value="2">Islamic Society of North America (ISNA)</option>
+                <option value="1">University of Islamic Sciences, Karachi</option>
+                <option value="3">Umm al-Qura, Makkah</option>
+                <option value="4">Muslim World League (MWL)</option>
+                <option value="5">Egyptian General Authority of Survey</option>
             </select>
             <!-- <h4 class="text-light" id="locationName">-</h4> -->
         </div>

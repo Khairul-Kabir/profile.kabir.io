@@ -75,11 +75,11 @@ Object.keys(districts).forEach(district => {
 });
 
 // Function to fetch prayer times
-function fetchPrayerTimes(lat, lon, locationName) {
+function fetchPrayerTimes(lat, lon, locationName,method) {
     loader.style.display = "block";
     document.getElementById("timingDisplay").style.display = "none";
 
-    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=Bangladesh&method=2`;
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=Bangladesh&method=${method}`;
 
     fetch(url)
         .then(response => response.json())
@@ -168,8 +168,20 @@ function fetchTimingsByDistrict() {
     let selectedDistrict = districtSelect.value;
     if (selectedDistrict) {
         let { lat, lon } = districts[selectedDistrict];
-        fetchPrayerTimes(lat, lon, selectedDistrict);
+        const selectedMethod = document.getElementById("methodSelect").value;
+
+        fetchPrayerTimes(lat, lon, selectedDistrict,selectedMethod);
     }
+}
+
+function fetchSelectedPrayerTimes() {
+    const selectedDistrict = districtSelect.value;
+    const { lat, lon } = districts[selectedDistrict];
+
+    // Get the selected calculation method
+    const selectedMethod = document.getElementById("methodSelect").value;
+
+    fetchPrayerTimes(lat, lon, selectedDistrict, selectedMethod);
 }
 
 // Function to get user location
@@ -186,11 +198,14 @@ function getUserLocation() {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
                     document.getElementById("districtSelect").value = districtName;
                     document.getElementById("detailAddress").textContent = data.display_name;
-                    fetchPrayerTimes(lat, lon, districtName);
+
+                    const selectedMethod = document.getElementById("methodSelect").value;
+
+                    fetchPrayerTimes(lat, lon, districtName,selectedMethod);
                 })
                 .catch(error => {
                     console.error("Error getting location details:", error);
-                    fetchPrayerTimes(lat, lon, "Your Location");
+                    fetchPrayerTimes(lat, lon, "Your Location","2");
                 })
                 .finally(() => loader.style.display = "none");
         }, () => alert("Geolocation access denied."));
