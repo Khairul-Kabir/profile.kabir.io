@@ -1,4 +1,5 @@
 const districtSelect = document.getElementById("districtSelect");
+var selectedCountry = "";
 const loader = document.getElementById("loader");
 getUserLocation();
 
@@ -75,11 +76,11 @@ Object.keys(districts).forEach(district => {
 });
 
 // Function to fetch prayer times
-function fetchPrayerTimes(lat, lon, locationName,method) {
+function fetchPrayerTimes(lat, lon, locationName, country, method) {
     loader.style.display = "block";
     document.getElementById("timingDisplay").style.display = "none";
 
-    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=Bangladesh&method=${method}`;
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}`;
 
     fetch(url)
         .then(response => response.json())
@@ -169,19 +170,19 @@ function fetchTimingsByDistrict() {
     if (selectedDistrict) {
         let { lat, lon } = districts[selectedDistrict];
         const selectedMethod = document.getElementById("methodSelect").value;
-
-        fetchPrayerTimes(lat, lon, selectedDistrict,selectedMethod);
+        selectedCountry = "Bangladesh";
+        fetchPrayerTimes(lat, lon, selectedDistrict, selectedCountry, selectedMethod);
     }
 }
 
-function fetchSelectedPrayerTimes() {
+function fetchSelectedPrayerTimesByMethod() {
     const selectedDistrict = districtSelect.value;
     const { lat, lon } = districts[selectedDistrict];
 
     // Get the selected calculation method
     const selectedMethod = document.getElementById("methodSelect").value;
 
-    fetchPrayerTimes(lat, lon, selectedDistrict, selectedMethod);
+    fetchPrayerTimes(lat, lon, selectedDistrict, selectedCountry, selectedMethod);
 }
 
 // Function to get user location
@@ -196,16 +197,17 @@ function getUserLocation() {
                 .then(response => response.json())
                 .then(data => {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
+                    let countryName = data.address.country;
                     document.getElementById("districtSelect").value = districtName;
                     document.getElementById("detailAddress").textContent = data.display_name;
 
                     const selectedMethod = document.getElementById("methodSelect").value;
 
-                    fetchPrayerTimes(lat, lon, districtName,selectedMethod);
+                    fetchPrayerTimes(lat, lon, districtName, countryName, selectedMethod);
                 })
                 .catch(error => {
                     console.error("Error getting location details:", error);
-                    fetchPrayerTimes(lat, lon, "Your Location","2");
+                    fetchPrayerTimes(lat, lon, selectedCountry, "Your Location","2");
                 })
                 .finally(() => loader.style.display = "none");
         }, () => alert("Geolocation access denied."));

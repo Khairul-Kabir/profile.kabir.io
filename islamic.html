@@ -33,7 +33,7 @@
             <select id="districtSelect" class="form-select" onchange="fetchTimingsByDistrict()">
                 <option value="">District</option>
             </select>
-            <select id="methodSelect" class="form-select" onchange="fetchSelectedPrayerTimes()">
+            <select id="methodSelect" class="form-select" onchange="fetchSelectedPrayerTimesByMethod()">
                 <option value="2">Islamic Society of North America (ISNA)</option>
                 <option value="1">University of Islamic Sciences, Karachi</option>
                 <option value="3">Umm al-Qura, Makkah</option>
@@ -70,8 +70,8 @@
                     <span class="text-light" id="currentPrayerEnd"></span>
                 </div>
                 <div class="d-flex justify-content-between w-100">
-                    <span class="text-warning">Next:</span>
-                    <span class="text-light"><span id="nextPrayer"></span> at <span id="nextPrayerTime"></span></span>
+                    <span class="text-warning" style="display: none;">Next:</span>
+                    <span class="text-light" style="display: none;"><span id="nextPrayer"></span> at <span id="nextPrayerTime"></span></span>
                 </div>
             </div>
         
