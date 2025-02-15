@@ -48,25 +48,52 @@
 
         <!-- Prayer Time Display -->
         <div class="d-flex justify-content-between">
-            <div class="col-md-5 mosque-door mt-4 text-left" id="timingDisplay">
-                <p>Current Prayer: <span id="currentPrayer"></span></p>
-                <p>Start Time: <span id="currentPrayerStart"></span></p>
-                <p>End Time: <span id="currentPrayerEnd"></span></p>
-                <p>Next Prayer: <span id="nextPrayer"></span> at <span id="nextPrayerTime"></span></p>
-
-                <!-- 
-                <h5 class="text-warning" id="currentPrayer">Loading...</h5>
-                <h5 class="text-warning"><span id="countdown"></span></h5> -->
+            <!-- Current Prayer Timing Section -->
+            <div class="col-md-5 mosque-door mt-4" id="timingDisplay">
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Current:</span>
+                    <span class="text-light" id="currentPrayer"></span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Start Time:</span>
+                    <span class="text-light" id="currentPrayerStart"></span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">End Time:</span>
+                    <span class="text-light" id="currentPrayerEnd"></span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Next:</span>
+                    <span class="text-light"><span id="nextPrayer"></span> at <span id="nextPrayerTime"></span></span>
+                </div>
             </div>
+        
+            <!-- Daily Prayer Timings Section -->
             <div class="col-md-5 mosque-door mt-4" id="timingDisplay">
                 <h4 id="locationName" class="text-light" style="display: none;"></h4>
-                <p class="text-light">Fajr: <span id="fajrTime">-</span></p>
-                <p class="text-light">Dhuhr: <span id="dhuhrTime">-</span></p>
-                <p class="text-light">Asr: <span id="asrTime">-</span></p>
-                <p class="text-light">Maghrib: <span id="maghribTime">-</span></p>
-                <p class="text-light">Isha: <span id="ishaTime">-</span></p>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Fajr:</span>
+                    <span class="text-light" id="fajrTime">-</span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Dhuhr:</span>
+                    <span class="text-light" id="dhuhrTime">-</span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Asr:</span>
+                    <span class="text-light" id="asrTime">-</span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Maghrib:</span>
+                    <span class="text-light" id="maghribTime">-</span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <span class="text-warning">Isha:</span>
+                    <span class="text-light" id="ishaTime">-</span>
+                </div>
             </div>
         </div>
+        
         <div class="d-flex justify-content-between mosque-door mt-4">
             <div class="col-md-4">
                 <p class="text-light"><strong>Sehri Ends:</strong> <span id="sehriTime">-</span></p>
@@ -74,9 +101,6 @@
             <div class="col-md-4">
                 <p class="text-light"><strong>Iftar Time:</strong> <span id="iftarTime">-</span></p>
             </div>
-            <!-- <div class="col-md-4">
-                <p class="text-light"><strong>Sehri Countdown:</strong> <span id="sehriTimeCountdown">-</span></p>
-            </div> -->
         </div>
     </div>
 
