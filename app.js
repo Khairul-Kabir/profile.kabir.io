@@ -207,3 +207,17 @@ function updateDateTime() {
     `;
 }
 setInterval(updateDateTime, 1000);
+
+function wrapText(id, maxLength) {
+    const element = document.getElementById(id);
+    let text = element.innerText || element.textContent;
+    if (text.length > maxLength) {
+        let wrappedText = '';
+        for (let i = 0; i < text.length; i += maxLength) {
+            wrappedText += text.substring(i, i + maxLength) + '<br>';
+        }
+        element.innerHTML = wrappedText;
+    }
+}
+
+wrapText('detailAddress', 40);

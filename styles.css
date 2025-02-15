@@ -10,7 +10,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgb(0 55 24 / 60%);
     z-index: -1;
 }
 
@@ -24,9 +24,10 @@ body {
     background-size: cover;
     padding: 30px;
     border-radius: 15px;
-    border: 2px solid #fff;
+    /* border: 2px solid #fff; */
     text-align: center;
     color: white;
+    background-color: #345d4a;
 }
 
 .text-light {
@@ -48,4 +49,8 @@ select {
 }
 .fa {
     margin-right: 5px;
+}
+#detailAddress {
+    max-width: 40ch;  /* 40 characters */
+    word-wrap: break-word;
 }
