@@ -17,6 +17,7 @@ body {
 .container {
     position: relative;
     z-index: 1;
+    /* max-width: 90% !important; */
 }
 
 .mosque-door {
@@ -54,3 +55,14 @@ select {
     max-width: 40ch;  /* 40 characters */
     word-wrap: break-word;
 }
+.bg-body-tertiary{
+    background-color: #345d4a !important;
+}
+.navbar-toggler {
+    border-color: white; /* White border */
+}
+
+.navbar-toggler-icon {
+    filter: invert(1); /* Turns black icon to white */
+}
+

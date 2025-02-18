@@ -88,6 +88,7 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
             if (data.code === 200) {
                 const timings = data.data.timings;
                 const hijriDate = data.data.date.hijri;
+                const gregorian = data.data.date.gregorian;
                 document.getElementById("locationName").textContent = locationName;
                 document.getElementById("sehriTime").textContent = timings.Fajr;
                 document.getElementById("iftarTime").textContent = timings.Maghrib;
@@ -99,7 +100,7 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 document.getElementById("sunriseTime").textContent = timings.Sunrise;
                 document.getElementById("sunsetTime").textContent = timings.Sunset;
 
-                document.getElementById("arabicDatetime").innerHTML = `${hijriDate.date} <br> (${hijriDate.weekday.ar}, ${hijriDate.month.ar}) (${hijriDate.weekday.en}, ${hijriDate.month.en})`;
+                document.getElementById("arabicDatetime").innerHTML = `${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year} <br> ${gregorian.weekday.en} - ${gregorian.day} ${gregorian.month.en}`;
 
 
                 updateCurrentPrayer(timings);
@@ -199,7 +200,7 @@ function getUserLocation() {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
                     let countryName = data.address.country;
                     document.getElementById("districtSelect").value = districtName;
-                    document.getElementById("detailAddress").textContent = data.display_name;
+                    document.getElementById("currentLocation").textContent = `${data.display_name.split(",")[0]},${data.display_name.split(",")[1]},${data.display_name.split(",")[2]}`;
 
                     const selectedMethod = document.getElementById("methodSelect").value;
 
@@ -219,9 +220,8 @@ function getUserLocation() {
 // Function to update date & time dynamically
 function updateDateTime() {
     const now = new Date();
-    document.getElementById("datetime").innerHTML = `
-        <span>${now.toLocaleDateString()} | ${now.toLocaleTimeString()}</span>
-    `;
+    document.getElementById("datetime").innerHTML = `${now.toLocaleTimeString()}</span>`;
+    // document.getElementById("datetime").innerHTML = `<span>${now.toLocaleDateString()} | ${now.toLocaleTimeString()}</span>`;
 }
 setInterval(updateDateTime, 1000);
 
