@@ -154,8 +154,8 @@ function updateCurrentPrayer(timings) {
     }
 
     document.getElementById("currentPrayer").textContent = currentPrayer;
-    document.getElementById("nextPrayer").textContent = nextPrayer ? nextPrayer : "Fajr";
-    document.getElementById("nextPrayerTime").textContent = nextPrayerTime ? prayerTimes.find(p => p.name === nextPrayer).start : timings.Fajr;
+    //document.getElementById("nextPrayer").textContent = nextPrayer ? nextPrayer : "Fajr";
+    //document.getElementById("nextPrayerTime").textContent = nextPrayerTime ? prayerTimes.find(p => p.name === nextPrayer).start : timings.Fajr;
 
     // Displaying the start and end time of the current prayer
     let activePrayer = prayerTimes.find(p => p.name === currentPrayer);
@@ -163,6 +163,8 @@ function updateCurrentPrayer(timings) {
         document.getElementById("currentPrayerStart").textContent = activePrayer.start;
         document.getElementById("currentPrayerEnd").textContent = activePrayer.end;
     }
+
+    startCountdown(activePrayer.end);
 }
 
 // Function to fetch timings by selected district
@@ -225,16 +227,31 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 
-function wrapText(id, maxLength) {
-    const element = document.getElementById(id);
-    let text = element.innerText || element.textContent;
-    if (text.length > maxLength) {
-        let wrappedText = '';
-        for (let i = 0; i < text.length; i += maxLength) {
-            wrappedText += text.substring(i, i + maxLength) + '<br>';
+function startCountdown(endTime) {
+    function updateCountdown() {
+        let now = new Date();
+        let [endHour, endMinute] = endTime.split(":").map(Number);
+        let end = new Date();
+        end.setHours(endHour, endMinute, 0, 0);
+
+        let diff = end - now;
+        if (diff <= 0) {
+            document.getElementById("countdownTime").textContent = "00:00";
+            document.getElementById("countdownCircle").style.borderColor = "red";
+            return;
         }
-        element.innerHTML = wrappedText;
+
+        let minutes = Math.floor(diff / 60000);
+        let seconds = Math.floor((diff % 60000) / 1000);
+        document.getElementById("countdownTime").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        // Change border color dynamically based on time remaining
+        let percentRemaining = (diff / (end - now + diff)) * 100;
+        let borderColor = percentRemaining > 50 ? "#FFD700" : percentRemaining > 20 ? "#FFA500" : "#FF0000";
+        document.getElementById("countdownCircle").style.borderColor = borderColor;
     }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 }
 
-wrapText('detailAddress', 40);

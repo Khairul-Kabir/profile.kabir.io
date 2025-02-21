@@ -66,3 +66,54 @@ select {
     filter: invert(1); /* Turns black icon to white */
 }
 
+.countdown-circle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 8px solid #FFD700; /* Default border color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.countdown-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 8px solid #FFD700; /* Default border color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    .countdown-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 18px;
+        border-width: 6px;
+    }
+}
+
+/* Mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+    .countdown-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 16px;
+        border-width: 5px;
+    }
+}
