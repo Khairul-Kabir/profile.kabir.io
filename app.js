@@ -163,12 +163,19 @@ function updateCurrentPrayer(timings) {
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
     const prayerTimes = [
-        { name: "Fajr", start: timings.Fajr, end: timings.Sunrise },  // Ends at sunrise
-        { name: "Salatul Duha", start: timings.DuhaStart, end: timings.Dhuhr },
-        { name: "Dhuhr", start: timings.Dhuhr, end: timings.Asr },
-        { name: "Asr", start: timings.Asr, end: timings.Maghrib },
-        { name: "Maghrib", start: timings.Maghrib, end: timings.Isha },
+        { name: "Fajr", start: timings.Fajr, end: subtractMinutes(timings.Sunrise, 1)},  // Ends at sunrise
+        { name: "Salatul Duha", start: timings.DuhaStart, end: subtractMinutes(timings.Dhuhr,1) },
+        { name: "Dhuhr", start: timings.Dhuhr, end: subtractMinutes(timings.Asr,1) },
+        { name: "Asr", start: timings.Asr, end: subtractMinutes(timings.Maghrib,1) },
+        { name: "Maghrib", start: timings.Maghrib, end: subtractMinutes(timings.Isha,1) },
         { name: "Isha", start: timings.Isha, end: "23:59" } // Ends at midnight or Fajr
+    ];
+
+    // Forbidden Prayer Times
+    const forbiddenTimes = [
+        { name: "Forbidden After Fajr", start: prayerTimes[0].end, end: timings.Sunrise },
+        { name: "Forbidden Before Dhuhr", start: subtractMinutes(timings.Dhuhr, 5), end: timings.Dhuhr },
+        { name: "Forbidden After Asr", start: subtractMinutes(prayerTimes[3].end,15), end: timings.Maghrib }
     ];
 
     let currentPrayer = "Waiting...";
@@ -195,7 +202,27 @@ function updateCurrentPrayer(timings) {
         }
     }
 
+    // Check if it's a forbidden time
+    let isForbidden = false;
+    for (let i = 0; i < forbiddenTimes.length; i++) {
+        let startTimeInMinutes = convertToMinutes(forbiddenTimes[i].start);
+        let endTimeInMinutes = convertToMinutes(forbiddenTimes[i].end);
+
+        if (currentTime >= startTimeInMinutes && currentTime < endTimeInMinutes) {
+            //currentPrayer = forbiddenTimes[i].name;
+            isForbidden = true;
+            break;
+        }
+    }
+
     document.getElementById("currentPrayer").textContent = currentPrayer;
+
+    // If forbidden time, display warning
+    if (isForbidden) {
+        document.getElementById("forbiddenMessage").textContent = "It is a forbidden time for voluntary prayer.";
+    } else {
+        document.getElementById("forbiddenMessage").textContent = "";
+    }
 
     // Displaying the start and end time of the current prayer
     let activePrayer = prayerTimes.find(p => p.name === currentPrayer);
@@ -204,7 +231,7 @@ function updateCurrentPrayer(timings) {
         document.getElementById("currentPrayerEnd").textContent = activePrayer.end;
     }
 
-    startCountdown(activePrayer.end);
+    startCountdown(activePrayer.end,isForbidden);
 }
 
 // Function to fetch timings by selected district
@@ -238,7 +265,7 @@ setInterval(updateDateTime, 1000);
 
 let countdownInterval;
 
-function startCountdown(endTime) {
+function startCountdown(endTime,isForbidden) {
     if (countdownInterval) {
         clearInterval(countdownInterval);
     }
@@ -269,6 +296,12 @@ function startCountdown(endTime) {
         let percentRemaining = (diff / totalDiff) * 100;
         let borderColor = percentRemaining > 50 ? "#FFD700" : percentRemaining > 20 ? "#FFA500" : "#FF0000";
         document.getElementById("countdownCircle").style.borderColor = borderColor;
+
+        if (isForbidden) {
+            document.getElementById("countdownCircle").style.borderColor = "red";
+            return;
+        }
+        
     }
 
     // Run immediately and set interval
@@ -355,6 +388,22 @@ function showError(error) {
             break;
     }
 }
+
+// Utility function to convert HH:MM to minutes
+function convertToMinutes(timeStr) {
+    let [hours, minutes] = timeStr.split(":").map(Number);
+    return hours * 60 + minutes;
+}
+
+// Utility function to subtract minutes from a time string
+function subtractMinutes(timeStr, minutes) {
+    let [hours, mins] = timeStr.split(":").map(Number);
+    let totalMinutes = hours * 60 + mins - minutes;
+    let newHours = Math.floor(totalMinutes / 60);
+    let newMinutes = totalMinutes % 60;
+    return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(2, "0")}`;
+}
+
 // Initialize with the default selected option
 document.addEventListener("DOMContentLoaded", () => {
     updateSelectedMethod();
