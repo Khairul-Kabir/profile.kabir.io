@@ -32,7 +32,7 @@
             <div class="collapse navbar-collapse ms-auto" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <select id="districtSelect" onchange="fetchTimingsByDistrict()">
+                        <select id="districtSelect" class="form-control form-select-sm" onchange="fetchTimingsByDistrict()">
                             <option value="">District</option>
                         </select>
                     </li>
@@ -131,7 +131,7 @@
             <div class="col-md-9">
                 <span class="text-light">Based On: </span>
                 <span id="selectedMethod" class="text-warning"> </span> <span class="text-light" onclick="showDropdown()" style="cursor: pointer;"><b>Change</b></span>
-                <select id="methodSelect" class="form-select d-none" onchange="updateSelectedMethod()">
+                <select id="methodSelect" class="form-control form-select-sm d-none" onchange="updateSelectedMethod()">
                     <option value="1">University of Islamic Sciences, Karachi</option>
                     <option value="2">Islamic Society of North America (ISNA)</option>
                     <option value="3">Umm al-Qura, Makkah</option>
