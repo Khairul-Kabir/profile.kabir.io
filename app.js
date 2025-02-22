@@ -78,7 +78,7 @@ Object.keys(districts).forEach(district => {
 // Function to fetch prayer times
 function fetchPrayerTimes(lat, lon, locationName, country, method) {
     loader.style.display = "block";
-    document.getElementById("timingDisplay").style.display = "none";
+    //document.getElementById("timingDisplay").style.display = "none";
 
     const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}`;
 
@@ -100,9 +100,16 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 document.getElementById("sunriseTime").textContent = timings.Sunrise;
                 document.getElementById("sunsetTime").textContent = timings.Sunset;
 
+                // Calculate Salatul Duha Time
+                const duhaStart = addMinutesToTime(timings.Sunrise, 15); // Start 15 min after sunrise
+                const duhaEnd = subtractMinutesFromTime(timings.Dhuhr, 10); // End 10 min before Dhuhr
+
+                document.getElementById("duhaStartTime").textContent = duhaStart;
+
                 document.getElementById("arabicDatetime").innerHTML = `${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year} <br> ${gregorian.weekday.en} - ${gregorian.day} ${gregorian.month.en}`;
 
-
+                timings.DuhaStart = duhaStart;
+                //timings.DuhaEnd = duhaEnd;
                 updateCurrentPrayer(timings);
 
             } else {
@@ -123,6 +130,7 @@ function updateCurrentPrayer(timings) {
 
     const prayerTimes = [
         { name: "Fajr", start: timings.Fajr, end: timings.Sunrise },  // Ends at sunrise
+        { name: "Salatul Duha", start: timings.DuhaStart, end: timings.Dhuhr },
         { name: "Dhuhr", start: timings.Dhuhr, end: timings.Asr },
         { name: "Asr", start: timings.Asr, end: timings.Maghrib },
         { name: "Maghrib", start: timings.Maghrib, end: timings.Isha },
@@ -154,8 +162,6 @@ function updateCurrentPrayer(timings) {
     }
 
     document.getElementById("currentPrayer").textContent = currentPrayer;
-    //document.getElementById("nextPrayer").textContent = nextPrayer ? nextPrayer : "Fajr";
-    //document.getElementById("nextPrayerTime").textContent = nextPrayerTime ? prayerTimes.find(p => p.name === nextPrayer).start : timings.Fajr;
 
     // Displaying the start and end time of the current prayer
     let activePrayer = prayerTimes.find(p => p.name === currentPrayer);
@@ -236,17 +242,21 @@ function startCountdown(endTime) {
 
         let diff = end - now;
         if (diff <= 0) {
-            document.getElementById("countdownTime").textContent = "00:00";
+            document.getElementById("countdownTime").textContent = "00:00:00";
             document.getElementById("countdownCircle").style.borderColor = "red";
             return;
         }
 
-        let minutes = Math.floor(diff / 60000);
-        let seconds = Math.floor((diff % 60000) / 1000);
-        document.getElementById("countdownTime").textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        let hours = Math.floor(diff / (1000 * 60 * 60));
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById("countdownTime").textContent = 
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         // Change border color dynamically based on time remaining
-        let percentRemaining = (diff / (end - now + diff)) * 100;
+        let totalDiff = end - now + diff; 
+        let percentRemaining = (diff / totalDiff) * 100;
         let borderColor = percentRemaining > 50 ? "#FFD700" : percentRemaining > 20 ? "#FFA500" : "#FF0000";
         document.getElementById("countdownCircle").style.borderColor = borderColor;
     }
@@ -254,4 +264,48 @@ function startCountdown(endTime) {
     updateCountdown();
     setInterval(updateCountdown, 1000);
 }
+
+// Function to add minutes to time (HH:mm format)
+function addMinutesToTime(time, minutes) {
+    let [hour, min] = time.split(':').map(Number);
+    let date = new Date();
+    date.setHours(hour);
+    date.setMinutes(min + minutes);
+    return formatTime(date);
+}
+
+// Function to subtract minutes from time (HH:mm format)
+function subtractMinutesFromTime(time, minutes) {
+    let [hour, min] = time.split(':').map(Number);
+    let date = new Date();
+    date.setHours(hour);
+    date.setMinutes(min - minutes);
+    return formatTime(date);
+}
+
+// Format time to HH:mm format
+function formatTime(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
+function updateSelectedMethod() {
+    let select = document.getElementById("methodSelect");
+    let selectedText = select.options[select.selectedIndex].text;
+    document.getElementById("selectedMethod").textContent = selectedText;
+    select.classList.add("d-none"); // Hide dropdown
+    document.getElementById("selectedMethod").classList.remove("d-none"); // Show text
+    fetchSelectedPrayerTimesByMethod(); // Call existing function
+}
+
+function showDropdown() {
+    document.getElementById("methodSelect").classList.remove("d-none"); // Show dropdown
+    document.getElementById("selectedMethod").classList.add("d-none"); // Hide text
+}
+
+// Initialize with the default selected option
+document.addEventListener("DOMContentLoaded", () => {
+    updateSelectedMethod();
+});
 

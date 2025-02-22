@@ -62,14 +62,6 @@
             <select id="districtSelect" class="form-select" onchange="fetchTimingsByDistrict()">
                 <option value="">District</option>
             </select>
-            <select id="methodSelect" class="form-select" onchange="fetchSelectedPrayerTimesByMethod()">
-                <option value="2">Islamic Society of North America (ISNA)</option>
-                <option value="1">University of Islamic Sciences, Karachi</option>
-                <option value="3">Umm al-Qura, Makkah</option>
-                <option value="4">Muslim World League (MWL)</option>
-                <option value="5">Egyptian General Authority of Survey</option>
-            </select>
-            <!-- <h4 class="text-light" id="locationName">-</h4> -->
         </div>
         <!-- Loader -->
         <div id="loader" class="text-center mt-3" style="display: none;">
@@ -80,11 +72,15 @@
         <!-- Prayer Time Display -->
         <div class="d-flex justify-content-between">
             <!-- Daily Prayer Timings Section -->
-            <div class="col-md-7 mosque-door mt-4" id="timingDisplay">
+            <div class="col-md-7 prayer-time mt-4" id="timingDisplay">
                 <h4 id="locationName" class="text-light" style="display: none;"></h4>
                 <div class="d-flex justify-content-between w-100 mb-2">
                     <span class="text-warning">Fajr:</span>
                     <span class="text-light" id="fajrTime">-</span>
+                </div>
+                <div class="d-flex justify-content-between w-100 mb-2">
+                    <span class="text-warning">Salatul Duha:</span>
+                    <span class="text-light" id="duhaStartTime">-</span>
                 </div>
                 <div class="d-flex justify-content-between w-100 mb-2">
                     <span class="text-warning">Dhuhr:</span>
@@ -104,7 +100,7 @@
                 </div>
             </div>
             <!-- Current Prayer Timing Section -->
-            <div class="col-md-4 mosque-door mt-4" id="timingDisplay">
+            <div class="col-md-4 current-prayer-time mt-4" id="timingDisplay">
                 <!-- <h2 class="mb-4">Current Prayer Countdown</h2> -->
                 <span class="text-light" id="currentPrayer"></span><br>
                 <span class="text-light">Time is running out</span>
@@ -129,15 +125,27 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <div class="d-flex justify-content-between mosque-door mt-4">
+        <div class="d-flex justify-content-between current-prayer-time mt-4">
             <div class="col-md-4">
                 <p class="text-light"><strong>Sehri Ends:</strong> <span id="sehriTime">-</span></p>
             </div>
             <div class="col-md-4">
                 <p class="text-light"><strong>Iftar Time:</strong> <span id="iftarTime">-</span></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <span class="text-light">Information Based On: </span>
+                <span id="selectedMethod" class="text-warning"> </span> <span class="text-light" onclick="showDropdown()" style="cursor: pointer;"><b>Chnage</b></span>
+                <select id="methodSelect" class="form-select d-none" onchange="updateSelectedMethod()">
+                    <option value="1">University of Islamic Sciences, Karachi</option>
+                    <option value="2">Islamic Society of North America (ISNA)</option>
+                    <option value="3">Umm al-Qura, Makkah</option>
+                    <option value="4">Muslim World League (MWL)</option>
+                    <option value="5">Egyptian General Authority of Survey</option>
+                </select>
             </div>
         </div>
     </div>
