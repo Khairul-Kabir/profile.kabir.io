@@ -32,9 +32,11 @@
             <div class="collapse navbar-collapse ms-auto" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <select id="districtSelect" class="form-control form-select-sm" onchange="fetchTimingsByDistrict()">
-                            <option value="">District</option>
-                        </select>
+                        <div class="col-md-8">
+                            <select id="districtSelect" class="form-control form-select-sm" onchange="fetchTimingsByDistrict()">
+                                <option value="">District</option>
+                            </select>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -129,8 +131,8 @@
                 <p class="text-light"><strong>Iftar Starts:</strong> <span id="iftarTime">-</span></p>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-9">
+        <div class="row d-flex justify-content-between mt-2">
+            <div class="col-md-4">
                 <span class="text-light">Based On: </span>
                 <span id="selectedMethod" class="text-warning"> </span> <span class="text-light" onclick="showDropdown()" style="cursor: pointer;"><b>Change</b></span>
                 <select id="methodSelect" class="form-control form-select-sm d-none" onchange="updateSelectedMethod()">
@@ -142,7 +144,7 @@
                 </select>
             </div>
             <div class="col-md-3 mt-2">
-                <div>
+                <div class="text-end">
                     <input type="radio" id="shafi" name="madhhab" value="0" onchange="fetchSelectedPrayerTimesByMethod()">
                     <label for="shafi" class="text-light">Shafi</label>
                     <input type="radio" id="hanafi" name="madhhab" value="1" checked onchange="fetchSelectedPrayerTimesByMethod()">
