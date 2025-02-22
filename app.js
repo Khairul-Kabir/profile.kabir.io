@@ -79,8 +79,9 @@ Object.keys(districts).forEach(district => {
 function fetchPrayerTimes(lat, lon, locationName, country, method) {
     loader.style.display = "block";
     //document.getElementById("timingDisplay").style.display = "none";
-
-    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}`;
+    const madhhab = document.querySelector('input[name="madhhab"]:checked').value;
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}&school=${madhhab}`;
+    //const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}`;
 
     fetch(url)
         .then(response => response.json())

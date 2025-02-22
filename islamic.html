@@ -128,7 +128,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-9">
                 <span class="text-light">Based On: </span>
                 <span id="selectedMethod" class="text-warning"> </span> <span class="text-light" onclick="showDropdown()" style="cursor: pointer;"><b>Chnage</b></span>
                 <select id="methodSelect" class="form-select d-none" onchange="updateSelectedMethod()">
@@ -138,6 +138,14 @@
                     <option value="4">Muslim World League (MWL)</option>
                     <option value="5">Egyptian General Authority of Survey</option>
                 </select>
+            </div>
+            <div class="col-md-3 mt-2">
+                <div>
+                    <input type="radio" id="shafi" name="madhhab" value="0" onchange="fetchSelectedPrayerTimesByMethod()">
+                    <label for="shafi" class="text-light">Shafi</label>
+                    <input type="radio" id="hanafi" name="madhhab" value="1" checked onchange="fetchSelectedPrayerTimesByMethod()">
+                    <label for="hanafi" class="text-light">Hanafi</label>
+                </div>
             </div>
         </div>
     </div>
