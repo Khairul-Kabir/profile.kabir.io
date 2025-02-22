@@ -75,6 +75,39 @@ Object.keys(districts).forEach(district => {
     districtSelect.add(option);
 });
 
+// Function to get user location
+function getUserLocation() {
+    if (navigator.geolocation) {
+        loader.style.display = "block";
+        navigator.geolocation.getCurrentPosition(fetchWeatherData, showError);
+        navigator.geolocation.getCurrentPosition(position => {
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+                .then(response => response.json())
+                .then(data => {
+                    let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
+                    let countryName = data.address.country;
+                    document.getElementById("districtSelect").value = districtName;
+                    document.getElementById("currentLocation").textContent = `${data.display_name.split(",")[0]},${data.display_name.split(",")[1]},${data.display_name.split(",")[2]}`;
+
+                    const selectedMethod = document.getElementById("methodSelect").value;
+
+                    fetchPrayerTimes(lat, lon, districtName, countryName, selectedMethod);
+                })
+                .catch(error => {
+                    console.error("Error getting location details:", error);
+                    fetchPrayerTimes(lat, lon, selectedCountry, "Your Location","2");
+                })
+                .finally(() => loader.style.display = "none");
+        }, () => alert("Geolocation access denied."));
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+
 // Function to fetch prayer times
 function fetchPrayerTimes(lat, lon, locationName, country, method) {
     loader.style.display = "block";
@@ -195,37 +228,6 @@ function fetchSelectedPrayerTimesByMethod() {
     fetchPrayerTimes(lat, lon, selectedDistrict, selectedCountry, selectedMethod);
 }
 
-// Function to get user location
-function getUserLocation() {
-    if (navigator.geolocation) {
-        loader.style.display = "block";
-        navigator.geolocation.getCurrentPosition(position => {
-            let lat = position.coords.latitude;
-            let lon = position.coords.longitude;
-
-            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-                .then(response => response.json())
-                .then(data => {
-                    let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
-                    let countryName = data.address.country;
-                    document.getElementById("districtSelect").value = districtName;
-                    document.getElementById("currentLocation").textContent = `${data.display_name.split(",")[0]},${data.display_name.split(",")[1]},${data.display_name.split(",")[2]}`;
-
-                    const selectedMethod = document.getElementById("methodSelect").value;
-
-                    fetchPrayerTimes(lat, lon, districtName, countryName, selectedMethod);
-                })
-                .catch(error => {
-                    console.error("Error getting location details:", error);
-                    fetchPrayerTimes(lat, lon, selectedCountry, "Your Location","2");
-                })
-                .finally(() => loader.style.display = "none");
-        }, () => alert("Geolocation access denied."));
-    } else {
-        alert("Geolocation is not supported by your browser.");
-    }
-}
-
 // Function to update date & time dynamically
 function updateDateTime() {
     const now = new Date();
@@ -313,6 +315,46 @@ function showDropdown() {
     document.getElementById("selectedMethod").classList.add("d-none"); // Hide text
 }
 
+// Function to fetch weather data from Open-Meteo API
+function fetchWeatherData(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    // Open-Meteo API endpoint for current weather
+    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.current_weather) {
+                const temperatureCelsius = data.current_weather.temperature;
+                document.getElementById("temperature").textContent = `${temperatureCelsius}°C`;
+            } else {
+                console.log("Weather data not available.");
+            }
+        })
+        .catch(error => {
+            console.log("Error fetching weather data:", error);
+        });
+}
+
+// Function to handle geolocation errors
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            console.log("An unknown error occurred.");
+            break;
+    }
+}
 // Initialize with the default selected option
 document.addEventListener("DOMContentLoaded", () => {
     updateSelectedMethod();
