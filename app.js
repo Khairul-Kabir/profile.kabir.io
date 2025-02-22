@@ -234,7 +234,13 @@ function updateDateTime() {
 }
 setInterval(updateDateTime, 1000);
 
+let countdownInterval;
+
 function startCountdown(endTime) {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+
     function updateCountdown() {
         let now = new Date();
         let [endHour, endMinute] = endTime.split(":").map(Number);
@@ -245,6 +251,7 @@ function startCountdown(endTime) {
         if (diff <= 0) {
             document.getElementById("countdownTime").textContent = "00:00:00";
             document.getElementById("countdownCircle").style.borderColor = "red";
+            clearInterval(countdownInterval); // Stop countdown when time reaches 0
             return;
         }
 
@@ -252,18 +259,19 @@ function startCountdown(endTime) {
         let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         let seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        document.getElementById("countdownTime").textContent = 
+        document.getElementById("countdownTime").textContent =
             `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         // Change border color dynamically based on time remaining
-        let totalDiff = end - now + diff; 
+        let totalDiff = end - now + diff;
         let percentRemaining = (diff / totalDiff) * 100;
         let borderColor = percentRemaining > 50 ? "#FFD700" : percentRemaining > 20 ? "#FFA500" : "#FF0000";
         document.getElementById("countdownCircle").style.borderColor = borderColor;
     }
 
+    // Run immediately and set interval
     updateCountdown();
-    setInterval(updateCountdown, 1000);
+    countdownInterval = setInterval(updateCountdown, 1000);
 }
 
 // Function to add minutes to time (HH:mm format)
