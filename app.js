@@ -124,7 +124,7 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 const hijriDate = data.data.date.hijri;
                 const gregorian = data.data.date.gregorian;
                 document.getElementById("locationName").textContent = locationName;
-                document.getElementById("sehriTime").textContent = timings.Fajr;
+                document.getElementById("sehriTime").textContent = subtractMinutes(timings.Fajr, 5); // Sehri time 5 minutes before Fajr
                 document.getElementById("iftarTime").textContent = timings.Maghrib;
                 document.getElementById("fajrTime").textContent = timings.Fajr;
                 document.getElementById("dhuhrTime").textContent = timings.Dhuhr;
