@@ -113,7 +113,7 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
     loader.style.display = "block";
     //document.getElementById("timingDisplay").style.display = "none";
     const madhhab = document.querySelector('input[name="madhhab"]:checked').value;
-    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}&school=${madhhab}`;
+    const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}&school=${madhhab}&tune=0,2,1,6,1,3,0,0,0`;
     //const url = `https://api.aladhan.com/v1/timingsByCity?city=${locationName}&country=${country}&method=${method}`;
 
     fetch(url)
