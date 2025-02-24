@@ -90,7 +90,7 @@ function getUserLocation() {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
                     let countryName = data.address.country;
                     document.getElementById("districtSelect").value = districtName;
-                    document.getElementById("currentLocation").textContent = `${data.display_name.split(",")[0]},${data.display_name.split(",")[1]},${data.display_name.split(",")[2]}`;
+                    document.getElementById("currentLocation").textContent = `${data.display_name.split(",")[0]},${data.display_name.split(",")[1]}`;
 
                     const selectedMethod = document.getElementById("methodSelect").value;
 
