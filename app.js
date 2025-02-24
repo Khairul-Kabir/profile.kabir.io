@@ -168,7 +168,7 @@ function updateCurrentPrayer(timings) {
         { name: "Dhuhr", start: timings.Dhuhr, end: subtractMinutes(timings.Asr,1) },
         { name: "Asr", start: timings.Asr, end: subtractMinutes(timings.Maghrib,1) },
         { name: "Maghrib", start: timings.Maghrib, end: subtractMinutes(timings.Isha,1) },
-        { name: "Isha", start: timings.Isha, end: "23:59" } // Ends at midnight or Fajr
+        { name: "Isha", start: timings.Isha, end: subtractMinutes(timings.Fajr,5) } // Ends at midnight or Fajr
     ];
 
     // Forbidden Prayer Times
