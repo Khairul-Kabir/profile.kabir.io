@@ -199,6 +199,9 @@ function updateCurrentPrayer(timings) {
         } else if (currentTime >= startTimeInMinutes && currentTime < endTimeInMinutes) {
             currentPrayer = prayerTimes[i].name;
             break;
+        }else if (prayerTimes[i].name === "Isha" && currentTime >= startTimeInMinutes) {
+            currentPrayer = prayerTimes[i].name;
+            break;
         }
     }
 
@@ -231,7 +234,7 @@ function updateCurrentPrayer(timings) {
         document.getElementById("currentPrayerEnd").textContent = activePrayer.end;
     }
 
-    startCountdown(activePrayer.end,isForbidden);
+    startCountdown(activePrayer,isForbidden);
 }
 
 // Function to fetch timings by selected district
@@ -265,15 +268,23 @@ setInterval(updateDateTime, 1000);
 
 let countdownInterval;
 
-function startCountdown(endTime,isForbidden) {
+function startCountdown(activePrayer,isForbidden) {
     if (countdownInterval) {
         clearInterval(countdownInterval);
     }
 
     function updateCountdown() {
         let now = new Date();
-        let [endHour, endMinute] = endTime.split(":").map(Number);
+        let [endHour, endMinute] = activePrayer.end.split(":").map(Number);
         let end = new Date();
+        end.setHours(endHour, endMinute, 0, 0);
+
+        // 🛠 Fix: Handle Isha's Time Crossing Midnight
+        if (activePrayer.name === "Isha" && endHour < now.getHours()) {
+            // Isha's end time is on the next day
+            end.setDate(end.getDate() + 1);
+        }
+
         end.setHours(endHour, endMinute, 0, 0);
 
         let diff = end - now;
