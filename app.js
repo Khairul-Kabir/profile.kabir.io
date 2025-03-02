@@ -122,7 +122,7 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
         .then(data => {
             if (data.code === 200) {
                 const timings = data.data.timings;
-                const hijriDate = data.data.date.hijri;
+                const hijriDate = adjustHijriDate(data.data.date.hijri,country);
                 const gregorian = data.data.date.gregorian;
                 document.getElementById("locationName").textContent = locationName;
                 document.getElementById("sehriTime").textContent = subtractMinutes(timings.Fajr, 5); // Sehri time 5 minutes before Fajr
@@ -414,6 +414,63 @@ function subtractMinutes(timeStr, minutes) {
     let newHours = Math.floor(totalMinutes / 60);
     let newMinutes = totalMinutes % 60;
     return `${String(newHours).padStart(2, "0")}:${String(newMinutes).padStart(2, "0")}`;
+}
+
+function adjustHijriDate(hijriDate, country) {
+    if (country === "Bangladesh") {
+        let day = parseInt(hijriDate.day);
+        let month = hijriDate.month; // Object containing month name
+        let year = parseInt(hijriDate.year);
+
+        // Subtract 1 day
+        day -= 1;
+
+        // Handle month change if the day becomes 0
+        if (day === 0) {
+            let prevMonthNumber = hijriDate.month.number - 1;
+            if (prevMonthNumber === 0) {
+                prevMonthNumber = 12;
+                year -= 1;
+            }
+
+            // Get the previous month details
+            let prevMonth = getHijriMonth(prevMonthNumber);
+            day = getHijriMonthDays(prevMonthNumber, year);
+            month = prevMonth;
+        }
+
+        return { day, month, year };
+    }
+
+    return hijriDate; // Return unchanged if not Bangladesh
+}
+
+// Function to get Hijri month details
+function getHijriMonth(monthNumber) {
+    const hijriMonths = {
+        1: { number: 1, en: "Muharram", ar: "محرم" },
+        2: { number: 2, en: "Safar", ar: "صفر" },
+        3: { number: 3, en: "Rabi' al-Awwal", ar: "ربيع الأول" },
+        4: { number: 4, en: "Rabi' al-Thani", ar: "ربيع الآخر" },
+        5: { number: 5, en: "Jumada al-Awwal", ar: "جمادى الأول" },
+        6: { number: 6, en: "Jumada al-Thani", ar: "جمادى الآخر" },
+        7: { number: 7, en: "Rajab", ar: "رجب" },
+        8: { number: 8, en: "Sha'ban", ar: "شعبان" },
+        9: { number: 9, en: "Ramadan", ar: "رمضان" },
+        10: { number: 10, en: "Shawwal", ar: "شوال" },
+        11: { number: 11, en: "Dhul-Qa'dah", ar: "ذو القعدة" },
+        12: { number: 12, en: "Dhul-Hijjah", ar: "ذو الحجة" }
+    };
+    return hijriMonths[monthNumber];
+}
+
+// Function to get Hijri month days (approximate values)
+function getHijriMonthDays(month, year) {
+    const hijriMonthDays = { 
+        1: 30, 2: 29, 3: 30, 4: 29, 5: 30, 6: 29, 
+        7: 30, 8: 29, 9: 30, 10: 29, 11: 30, 12: 29 
+    };
+    return hijriMonthDays[month];
 }
 
 // Initialize with the default selected option
