@@ -89,6 +89,13 @@ function getUserLocation() {
                 .then(data => {
                     let districtName = data.address.city || data.address.town || data.address.village || "Your Location";
                     let countryName = data.address.country;
+
+                    const districtDropdownWrapper = document.getElementById("districtSelect").closest(".nav-item");
+                    if (countryName.toLowerCase() !== "bangladesh") {
+                        districtDropdownWrapper.style.display = "none";
+                    } else {
+                        districtDropdownWrapper.style.display = "block";
+                    }
                     document.getElementById("districtSelect").value = districtName;
                     document.getElementById("currentLocation").textContent = `${data.display_name.split(",")[0]},${data.display_name.split(",")[1]}`;
 
