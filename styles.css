@@ -40,6 +40,13 @@ body {
     color: white;
     background-color: #00000047;
 }
+
+.current-prayer {
+    background-color: #ffc10733;
+    /* border-left: 2px solid #ffc107; */
+    font-weight: bold;
+}
+
 .text-light {
     color: #fff;
 }

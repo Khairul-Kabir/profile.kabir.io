@@ -124,20 +124,23 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 const timings = data.data.timings;
                 const hijriDate = adjustHijriDate(data.data.date.hijri,country);
                 const gregorian = data.data.date.gregorian;
-                document.getElementById("locationName").textContent = locationName;
-                document.getElementById("sehriTime").textContent = subtractMinutes(timings.Fajr, 5); // Sehri time 5 minutes before Fajr
-                document.getElementById("iftarTime").textContent = timings.Maghrib;
-                document.getElementById("fajrTime").textContent = timings.Fajr;
-                document.getElementById("dhuhrTime").textContent = timings.Dhuhr;
-                document.getElementById("asrTime").textContent = timings.Asr;
-                document.getElementById("maghribTime").textContent = timings.Maghrib;
-                document.getElementById("ishaTime").textContent = timings.Isha;
-                document.getElementById("sunriseTime").textContent = timings.Sunrise;
-                document.getElementById("sunsetTime").textContent = timings.Sunset;
 
                 // Calculate Salatul Duha Time
                 const duhaStart = addMinutesToTime(timings.Sunrise, 15); // Start 15 min after sunrise
                 const duhaEnd = subtractMinutesFromTime(timings.Dhuhr, 10); // End 10 min before Dhuhr
+
+                document.getElementById("locationName").textContent = locationName;
+                document.getElementById("sehriTime").textContent = subtractMinutes(timings.Fajr, 5); // Sehri time 5 minutes before Fajr
+                document.getElementById("iftarTime").textContent = timings.Maghrib;
+                document.getElementById("fajrTime").textContent = formatRange(timings.Fajr, timings.Sunrise);
+                document.getElementById("duhaStartTime").textContent = formatRange(duhaStart, duhaEnd);
+                document.getElementById("dhuhrTime").textContent = formatRange(timings.Dhuhr, timings.Asr);
+                document.getElementById("asrTime").textContent = formatRange(timings.Asr, timings.Maghrib);
+                document.getElementById("maghribTime").textContent = formatRange(timings.Maghrib, timings.Isha);
+                document.getElementById("ishaTime").textContent = formatRange(timings.Isha, "23:59");
+
+                document.getElementById("sunriseTime").textContent = timings.Sunrise;
+                document.getElementById("sunsetTime").textContent = timings.Sunset;
 
                 document.getElementById("duhaStartTime").textContent = duhaStart;
 
@@ -156,6 +159,26 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
             loader.style.display = "none";
             document.getElementById("timingDisplay").style.display = "block";
         });
+}
+
+
+function formatRange(start, end) {
+    return `${start} - ${end}`;
+}
+
+
+function addMinutesToTime(time, minsToAdd) {
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes + minsToAdd);
+    return date.toTimeString().slice(0, 5);
+}
+
+function subtractMinutesFromTime(time, minsToSubtract) {
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes - minsToSubtract);
+    return date.toTimeString().slice(0, 5);
 }
 
 // Update Current Prayer & Countdown
@@ -236,6 +259,31 @@ function updateCurrentPrayer(timings) {
     }
 
     startCountdown(activePrayer,isForbidden);
+    // Highlight current prayer block
+    const prayerNameToIdMap = {
+        "Fajr": "fajrTime",
+        "Salatul Duha": "duhaStartTime",
+        "Dhuhr": "dhuhrTime",
+        "Asr": "asrTime",
+        "Maghrib": "maghribTime",
+        "Isha": "ishaTime"
+    };
+
+    // Remove previous highlights
+    Object.values(prayerNameToIdMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.parentElement) {
+            el.parentElement.classList.remove("current-prayer");
+        }
+    });
+
+    // Add highlight to current
+    const currentPrayerId = prayerNameToIdMap[currentPrayer];
+    const currentPrayerEl = document.getElementById(currentPrayerId);
+    if (currentPrayerEl && currentPrayerEl.parentElement) {
+        currentPrayerEl.parentElement.classList.add("current-prayer");
+    }
+
 }
 
 // Function to fetch timings by selected district
