@@ -144,12 +144,12 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 document.getElementById("dhuhrTime").textContent = formatRange(timings.Dhuhr, timings.Asr);
                 document.getElementById("asrTime").textContent = formatRange(timings.Asr, timings.Maghrib);
                 document.getElementById("maghribTime").textContent = formatRange(timings.Maghrib, timings.Isha);
-                document.getElementById("ishaTime").textContent = formatRange(timings.Isha, "23:59");
+                document.getElementById("ishaTime").textContent = formatRange(timings.Isha, subtractMinutes(timings.Fajr,5));
 
                 document.getElementById("sunriseTime").textContent = timings.Sunrise;
                 document.getElementById("sunsetTime").textContent = timings.Sunset;
 
-                document.getElementById("duhaStartTime").textContent = duhaStart;
+                //document.getElementById("duhaStartTime").textContent = duhaStart;
 
                 document.getElementById("arabicDatetime").innerHTML = `${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year} <br> ${gregorian.weekday.en} - ${gregorian.day} ${gregorian.month.en}`;
 
@@ -169,8 +169,22 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
 }
 
 
+function convertTo12HourFormat(time) {
+    let [hour, minute] = time.split(":").map(Number);
+
+    const hour24 = hour.toString().padStart(2, '0');
+    const minuteStr = minute.toString().padStart(2, '0');
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 || 12;
+    const hour12Str = hour12.toString().padStart(2, '0');
+
+    return `${hour12Str}:${minuteStr}`;
+}
+
+
 function formatRange(start, end) {
-    return `${start} - ${end}`;
+    return `${convertTo12HourFormat(start)} - ${convertTo12HourFormat(end)}`;
 }
 
 

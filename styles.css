@@ -1,8 +1,8 @@
 body {
     /* background: url('https://source.unsplash.com/1600x900/?mosque,ramadan') no-repeat center center fixed; */
     background-size: inherit;
-    /* background-repeat: no-repeat;
-    background-position: center center; */
+    background-repeat: no-repeat;
+    /* background-position: center center; */
     font-family: Arial, sans-serif;
 }
 .background-overlay {
