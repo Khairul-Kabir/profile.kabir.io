@@ -137,8 +137,8 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 const duhaEnd = subtractMinutesFromTime(timings.Dhuhr, 10); // End 10 min before Dhuhr
 
                 document.getElementById("locationName").textContent = locationName;
-                document.getElementById("sehriTime").textContent = subtractMinutes(timings.Fajr, 5); // Sehri time 5 minutes before Fajr
-                document.getElementById("iftarTime").textContent = timings.Maghrib;
+                document.getElementById("sehriTime").textContent = convertTo12HourFormatWithAMPM(subtractMinutes(timings.Fajr, 5)); // Sehri time 5 minutes before Fajr
+                document.getElementById("iftarTime").textContent = convertTo12HourFormatWithAMPM(timings.Maghrib);
                 document.getElementById("fajrTime").textContent = formatRange(timings.Fajr, timings.Sunrise);
                 document.getElementById("duhaStartTime").textContent = formatRange(duhaStart, duhaEnd);
                 document.getElementById("dhuhrTime").textContent = formatRange(timings.Dhuhr, timings.Asr);
@@ -148,6 +148,10 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
 
                 document.getElementById("sunriseTime").textContent = timings.Sunrise;
                 document.getElementById("sunsetTime").textContent = timings.Sunset;
+
+                document.getElementById("firstthird").textContent = convertTo12HourFormatWithAMPM(timings.Firstthird);
+                document.getElementById("midnight").textContent = convertTo12HourFormatWithAMPM(timings.Midnight);
+                document.getElementById("lastthird").textContent = convertTo12HourFormatWithAMPM(timings.Lastthird);
 
                 //document.getElementById("duhaStartTime").textContent = duhaStart;
 
@@ -180,6 +184,19 @@ function convertTo12HourFormat(time) {
     const hour12Str = hour12.toString().padStart(2, '0');
 
     return `${hour12Str}:${minuteStr}`;
+}
+
+function convertTo12HourFormatWithAMPM(time) {
+    let [hour, minute] = time.split(":").map(Number);
+
+    const hour24 = hour.toString().padStart(2, '0');
+    const minuteStr = minute.toString().padStart(2, '0');
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 || 12;
+    const hour12Str = hour12.toString().padStart(2, '0');
+
+    return `${hour12Str}:${minuteStr} ${ampm}`;
 }
 
 

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body style="background-image: url(assets/img/background2.jpg);">
+<body style="background-image: url(assets/img/background2.jpg); background-size: cover; background-repeat: no-repeat;">
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary text-light">
         <div class="container-fluid">
@@ -23,8 +23,9 @@
                 <small id="currentLocation"></small>
             </div>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -32,7 +33,8 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <div class="col-md-8">
-                            <select id="districtSelect" class="form-control form-select-sm" onchange="fetchTimingsByDistrict()">
+                            <select id="districtSelect" class="form-control form-select-sm"
+                                onchange="fetchTimingsByDistrict()">
                                 <option value="">District</option>
                             </select>
                         </div>
@@ -47,9 +49,8 @@
 
     <!-- Main Container -->
     <div class="container mt-4">
-
         <!-- Header Section -->
-        <div class="d-flex justify-content-between text-light mt-2">
+        <div class="d-flex justify-content-between text-light mt-2 flex-wrap">
             <div>
                 <div id="datetime"></div>
                 <div id="arabicDatetime"></div>
@@ -57,7 +58,8 @@
             <div>
                 <div><i class="fa fa-sun-o text-warning"></i> Sunrise: <span id="sunriseTime"></span></div>
                 <div><i class="fa fa-moon-o text-light"></i> Sunset: <span id="sunsetTime"></span></div>
-                <div><i class="fa fa-thermometer-half" aria-hidden="true"></i> Temperature: <span id="temperature">Loading...</span></div>
+                <div><i class="fa fa-thermometer-half" aria-hidden="true"></i> Temperature: <span
+                        id="temperature">Loading...</span></div>
             </div>
         </div>
 
@@ -67,84 +69,91 @@
             <p class="text-light">Loading...</p>
         </div>
 
-        <!-- Prayer Timings Display -->
-        <div class="d-flex justify-content-between">
-            <!-- Daily Prayer Times -->
-            <div class="col-md-7 prayer-time mt-4">
-                <h4 id="locationName" class="text-light" style="display: none;"></h4>
-
-                <div class="d-flex justify-content-between w-100 mb-2">
-                    <span class="text-warning">Fajr:</span>
-                    <span class="text-light" id="fajrTime">-</span>
+        <!-- Cards Row -->
+        <div class="row mt-4 g-3">
+            <!-- Prayer Times -->
+            <div class="col-12 col-md-4">
+                <div class="equal-height text-light">
+                    <h4 id="locationName" style="display: none;"></h4>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Fajr:</span><span id="fajrTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Salatul Duha:</span><span id="duhaStartTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Dhuhr:</span><span id="dhuhrTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Asr:</span><span id="asrTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Maghrib:</span><span id="maghribTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Isha:</span><span id="ishaTime">-</span>
+                    </div>
+                    <div id="forbiddenMessage" class="text-danger text-center mt-2"></div>
                 </div>
-                <div class="d-flex justify-content-between w-100 mb-2">
-                    <span class="text-warning">Salatul Duha:</span>
-                    <span class="text-light" id="duhaStartTime">-</span>
-                </div>
-                <div class="d-flex justify-content-between w-100 mb-2">
-                    <span class="text-warning">Dhuhr:</span>
-                    <span class="text-light" id="dhuhrTime">-</span>
-                </div>
-                <div class="d-flex justify-content-between w-100 mb-2">
-                    <span class="text-warning">Asr:</span>
-                    <span class="text-light" id="asrTime">-</span>
-                </div>
-                <div class="d-flex justify-content-between w-100 mb-2">
-                    <span class="text-warning">Maghrib:</span>
-                    <span class="text-light" id="maghribTime">-</span>
-                </div>
-                <div class="d-flex justify-content-between w-100 mb-2">
-                    <span class="text-warning">Isha:</span>
-                    <span class="text-light" id="ishaTime">-</span>
-                </div>
-
-                <div id="forbiddenMessage" class="text-danger text-center mt-2"></div>
             </div>
 
             <!-- Current Prayer Countdown -->
-            <div class="col-md-4 current-prayer-time mt-4">
-                <span class="text-light" id="currentPrayer"></span><br>
-                <span class="text-light">Time is running out</span>
-                <div class="d-flex justify-content-center">
-                    <div id="countdownCircle" class="countdown-circle">
-                        <span id="countdownTime">--:--</span>
+            <div class="col-12 col-md-4">
+                <div class="equal-height text-light text-center">
+                    <span id="currentPrayer"></span>
+                    <span class="d-block">Time is running out</span>
+                    <div class="d-flex justify-content-center mt-2">
+                        <div id="countdownCircle" class="countdown-circle">
+                            <span id="countdownTime">--:--</span>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-5 mosque-door mt-4" style="display: none;">
-                    <div class="d-flex justify-content-between w-100">
-                        <span class="text-warning">Current:</span>
-                        <span class="text-light" id="currentPrayer">---</span>
-                    </div>
-                    <div class="d-flex justify-content-between w-100">
-                        <span class="text-warning">Start Time:</span>
-                        <span class="text-light" id="currentPrayerStart">--:--</span>
-                    </div>
-                    <div class="d-flex justify-content-between w-100">
-                        <span class="text-warning">End Time:</span>
-                        <span class="text-light" id="currentPrayerEnd">--:--</span>
+                    <div class="mt-4 mosque-door" style="display: none;">
+                        <div class="d-flex justify-content-between w-100">
+                            <span class="text-warning">Current:</span>
+                            <span class="text-light" id="currentPrayer">---</span>
+                        </div>
+                        <div class="d-flex justify-content-between w-100">
+                            <span class="text-warning">Start Time:</span>
+                            <span class="text-light" id="currentPrayerStart">--:--</span>
+                        </div>
+                        <div class="d-flex justify-content-between w-100">
+                            <span class="text-warning">End Time:</span>
+                            <span class="text-light" id="currentPrayerEnd">--:--</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sehri & Iftar -->
-        <div class="d-flex justify-content-between current-prayer-time mt-4">
-            <div class="col-md-4">
-                <p class="text-light"><strong>Sehri Ends:</strong> <span id="sehriTime">-</span></p>
-            </div>
-            <div class="col-md-4">
-                <p class="text-light"><strong>Iftar Starts:</strong> <span id="iftarTime">-</span></p>
+            <!-- Sehri & Iftar -->
+            <div class="col-12 col-md-4">
+                <div class="equal-height text-light">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">First third:</span><span id="firstthird">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Mid Night:</span><span id="midnight">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Last third:</span><span id="lastthird">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Sehri Ends:</span><span id="sehriTime">-</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-warning">Iftar Starts:</span><span id="iftarTime">-</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Method and Madhhab Selection -->
-        <div class="row d-flex justify-content-between mt-2">
+        <div class="row d-flex justify-content-between mt-4">
             <div class="col-md-4">
                 <span class="text-light">Based On: </span>
                 <span id="selectedMethod" class="text-warning"></span>
                 <span class="text-light" onclick="showDropdown()" style="cursor: pointer;"><b>Change</b></span>
-                <select id="methodSelect" class="form-control form-select-sm d-none" onchange="updateSelectedMethod()">
+                <select id="methodSelect" class="form-control form-select-sm d-none"
+                    onchange="updateSelectedMethod()">
                     <option value="1">University of Islamic Sciences, Karachi</option>
                     <option value="2">Islamic Society of North America (ISNA)</option>
                     <option value="3">Umm al-Qura, Makkah</option>
@@ -154,16 +163,18 @@
             </div>
             <div class="col-md-3 mt-2">
                 <div class="text-end" style="display: none;">
-                    <input type="radio" id="shafi" name="madhhab" value="0" onchange="fetchSelectedPrayerTimesByMethod()">
+                    <input type="radio" id="shafi" name="madhhab" value="0"
+                        onchange="fetchSelectedPrayerTimesByMethod()">
                     <label for="shafi" class="text-light">Shafi</label>
-                    <input type="radio" id="hanafi" name="madhhab" value="1" checked onchange="fetchSelectedPrayerTimesByMethod()">
+                    <input type="radio" id="hanafi" name="madhhab" value="1" checked
+                        onchange="fetchSelectedPrayerTimesByMethod()">
                     <label for="hanafi" class="text-light">Hanafi</label>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript App -->
+    <!-- JavaScript -->
     <script src="app.js"></script>
 </body>
 
