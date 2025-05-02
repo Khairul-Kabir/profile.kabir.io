@@ -135,7 +135,9 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
                 // Calculate Salatul Duha Time
                 const duhaStart = addMinutesToTime(timings.Sunrise, 15); // Start 15 min after sunrise
                 const duhaEnd = subtractMinutesFromTime(timings.Dhuhr, 10); // End 10 min before Dhuhr
-
+                if(gregorian.weekday.en === "Friday"){
+                    document.getElementById("jummahOrDuhar").textContent = "Jummah";
+                }
                 document.getElementById("locationName").textContent = locationName;
                 document.getElementById("sehriTime").textContent = convertTo12HourFormatWithAMPM(subtractMinutes(timings.Fajr, 5)); // Sehri time 5 minutes before Fajr
                 document.getElementById("iftarTime").textContent = convertTo12HourFormatWithAMPM(timings.Maghrib);
@@ -159,7 +161,7 @@ function fetchPrayerTimes(lat, lon, locationName, country, method) {
 
                 timings.DuhaStart = duhaStart;
                 //timings.DuhaEnd = duhaEnd;
-                updateCurrentPrayer(timings);
+                updateCurrentPrayer(timings,gregorian.weekday.en);
 
             } else {
                 alert("Error fetching prayer times.");
@@ -220,7 +222,7 @@ function subtractMinutesFromTime(time, minsToSubtract) {
 }
 
 // Update Current Prayer & Countdown
-function updateCurrentPrayer(timings) {
+function updateCurrentPrayer(timings,weekday) {
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
@@ -279,8 +281,11 @@ function updateCurrentPrayer(timings) {
             break;
         }
     }
-
-    document.getElementById("currentPrayer").textContent = currentPrayer;
+    if(weekday === "Friday" && currentPrayer === "Dhuhr") {
+        document.getElementById("currentPrayer").textContent = "Jummah";
+    }else{
+        document.getElementById("currentPrayer").textContent = currentPrayer;
+    }
 
     // If forbidden time, display warning
     if (isForbidden) {
