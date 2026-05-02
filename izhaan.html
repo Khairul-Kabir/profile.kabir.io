@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Baby Feeding Tracker</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 15px; }
+    button { padding: 10px; margin: 5px 0; }
+    input, select { padding: 8px; margin: 5px 0; width: 100%; }
+    .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+
+<body>
+
+<h2>👶 Baby Feeding Tracker</h2>
+
+<button id="startDay">▶ Start Today</button>
+
+<div id="todaySection" style="display:none">
+
+  <input type="number" id="amount" placeholder="Amount (ml)" />
+  
+  <select id="type">
+    <option value="Breast">Breast Milk</option>
+    <option value="Formula">Formula</option>
+  </select>
+
+  <button id="addFeed">➕ Add Feed</button>
+
+  <div class="card">
+    <h3>Today's Log</h3>
+    <ul id="logList"></ul>
+  </div>
+
+  <button id="endDay">✅ End Day</button>
+
+  <div id="summary"></div>
+
+</div>
+
+<hr>
+
+<h3>📊 History</h3>
+<ul id="history"></ul>
+
+<script>
+
+function getToday() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString();
+}
+
+function loadData() {
+  return JSON.parse(localStorage.getItem("feedingData") || "{}");
+}
+
+function saveData(data) {
+  localStorage.setItem("feedingData", JSON.stringify(data));
+}
+
+function renderToday() {
+  let data = loadData();
+  let today = getToday();
+
+  $("#logList").empty();
+
+  if (!data[today]) return;
+
+  data[today].forEach(f => {
+    $("#logList").append(
+      `<li>${f.time} - ${f.amount}ml (${f.type})</li>`
+    );
+  });
+}
+
+function renderHistory() {
+  let data = loadData();
+  $("#history").empty();
+
+  for (let date in data) {
+    let total = data[date].reduce((sum, f) => sum + f.amount, 0);
+    $("#history").append(`<li>${date} - ${total} ml</li>`);
+  }
+}
+
+$("#startDay").click(function () {
+  $("#todaySection").show();
+});
+
+$("#addFeed").click(function () {
+  let amount = parseInt($("#amount").val());
+  let type = $("#type").val();
+  let today = getToday();
+
+  if (!amount) return alert("Enter amount");
+
+  let data = loadData();
+
+  if (!data[today]) data[today] = [];
+
+  data[today].push({
+    time: getTime(),
+    amount,
+    type
+  });
+
+  saveData(data);
+
+  $("#amount").val("");
+
+  renderToday();
+  renderHistory();
+});
+
+$("#endDay").click(function () {
+  let data = loadData();
+  let today = getToday();
+
+  let breast = 0, formula = 0;
+
+  data[today].forEach(f => {
+    if (f.type === "Breast") breast += f.amount;
+    else formula += f.amount;
+  });
+
+  $("#summary").html(`
+    <h3>Summary</h3>
+    Breast: ${breast} ml<br>
+    Formula: ${formula} ml<br>
+    Total: ${breast + formula} ml
+  `);
+});
+
+$(document).ready(function () {
+  renderToday();
+  renderHistory();
+});
+
+</script>
+
+</body>
+</html>
