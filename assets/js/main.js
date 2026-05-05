@@ -99,6 +99,58 @@
     new PureCounter();
   }
 
+  /* ---- Contact form (FormSubmit AJAX) ---- */
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    const loading = contactForm.querySelector('.loading');
+    const errorMsg = contactForm.querySelector('.error-message');
+    const sentMsg = contactForm.querySelector('.sent-message');
+    const submitBtn = contactForm.querySelector('.btn-submit');
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (loading) loading.style.display = 'block';
+      if (errorMsg) errorMsg.style.display = 'none';
+      if (sentMsg) sentMsg.style.display = 'none';
+      if (submitBtn) submitBtn.disabled = true;
+
+      const data = Object.fromEntries(new FormData(contactForm));
+
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/me@khairulkabir.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+        const result = await res.json().catch(() => ({}));
+
+        if (loading) loading.style.display = 'none';
+
+        if (res.ok && (result.success === 'true' || result.success === true)) {
+          if (sentMsg) sentMsg.style.display = 'block';
+          contactForm.reset();
+        } else {
+          if (errorMsg) {
+            errorMsg.textContent = result.message || 'Sorry, something went wrong. Please email me directly at me@khairulkabir.com.';
+            errorMsg.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        if (loading) loading.style.display = 'none';
+        if (errorMsg) {
+          errorMsg.textContent = 'Network error. Please email me directly at me@khairulkabir.com.';
+          errorMsg.style.display = 'block';
+        }
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
   /* ---- Scroll-reveal animations ---- */
   const revealObserver = new IntersectionObserver(
     (entries) => {
