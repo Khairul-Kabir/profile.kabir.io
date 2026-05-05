@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Md. Khairul Kabir — Curriculum Vitae</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @page { size: A4; margin: 14mm 14mm 14mm 14mm; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      color: #111;
+      background: #fff;
+      font-size: 10.2pt;
+      line-height: 1.42;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .cv { max-width: 760px; margin: 0 auto; padding: 0; }
+
+    /* ===== Header ===== */
+    .head {
+      border-bottom: 2px solid #111;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .head h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+    }
+    .head .role {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #333;
+      margin-top: 4px;
+      letter-spacing: 0.2px;
+    }
+    .head .contact {
+      margin-top: 8px;
+      font-size: 9.4pt;
+      color: #333;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+    }
+    .head .contact span { white-space: nowrap; }
+    .head .contact a { color: #111; text-decoration: none; }
+    .head .contact a:hover { text-decoration: underline; }
+
+    /* ===== Sections ===== */
+    section { margin-bottom: 12px; page-break-inside: auto; }
+    h2 {
+      font-size: 10.4pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      border-bottom: 1px solid #111;
+      padding-bottom: 3px;
+      margin-bottom: 8px;
+    }
+
+    /* ===== Summary ===== */
+    .summary p {
+      font-size: 10.2pt;
+      line-height: 1.5;
+    }
+
+    /* ===== Experience ===== */
+    .job { margin-bottom: 11px; page-break-inside: avoid; }
+    .job:last-child { margin-bottom: 0; }
+    .job-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .job-head .left { flex: 1; min-width: 0; }
+    .job-title {
+      font-size: 10.8pt;
+      font-weight: 700;
+      color: #111;
+    }
+    .job-company {
+      font-size: 10.4pt;
+      font-weight: 600;
+      color: #111;
+    }
+    .job-meta {
+      font-size: 9.4pt;
+      color: #444;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .job-loc {
+      font-size: 9.2pt;
+      color: #555;
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+    ul.bullets {
+      list-style: none;
+      padding-left: 14px;
+      margin-top: 4px;
+    }
+    ul.bullets li {
+      position: relative;
+      font-size: 10pt;
+      line-height: 1.48;
+      margin-bottom: 2px;
+      padding-left: 0;
+    }
+    ul.bullets li::before {
+      content: "▸";
+      position: absolute;
+      left: -12px;
+      color: #111;
+      font-size: 8pt;
+      top: 1px;
+    }
+
+    /* ===== Skills grid ===== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      row-gap: 4px;
+      column-gap: 12px;
+      font-size: 10pt;
+    }
+    .skills-grid dt {
+      font-weight: 700;
+      color: #111;
+    }
+    .skills-grid dd { color: #222; }
+
+    /* ===== Education / Certs row ===== */
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+    .edu-item, .cert-item {
+      font-size: 10pt;
+      line-height: 1.5;
+    }
+    .edu-item .ed-title, .cert-item .ct-title {
+      font-weight: 700;
+    }
+    .edu-item .ed-meta, .cert-item .ct-meta {
+      color: #444;
+      font-size: 9.4pt;
+    }
+    .cert-list { list-style: none; }
+    .cert-list li {
+      font-size: 9.8pt;
+      margin-bottom: 2px;
+    }
+    .cert-list li strong { font-weight: 700; }
+
+    /* Footer line */
+    .foot {
+      margin-top: 10px;
+      padding-top: 6px;
+      border-top: 1px solid #ddd;
+      font-size: 8.6pt;
+      color: #777;
+      text-align: center;
+    }
+
+    @media screen {
+      body { padding: 32px 16px; background: #f4f4f4; }
+      .cv { background: #fff; padding: 36px 40px; box-shadow: 0 6px 32px rgba(0,0,0,0.12); }
+    }
+  </style>
+</head>
+<body>
+  <div class="cv">
+
+    <!-- ===== Header ===== -->
+    <header class="head">
+      <h1>Md. Khairul Kabir</h1>
+      <div class="role">Principal Software Engineer · Micro-Frontend & .NET Architect</div>
+      <div class="contact">
+        <span><a href="mailto:me@khairulkabir.com">me@khairulkabir.com</a></span>
+        <span>Dhaka, Bangladesh</span>
+        <span><a href="https://profile.kabir.io">profile.kabir.io</a></span>
+        <span><a href="https://www.linkedin.com/in/md-khairul-kabir-b05353b1/">linkedin.com/in/md-khairul-kabir</a></span>
+        <span><a href="https://github.com/Khairul-Kabir">github.com/Khairul-Kabir</a></span>
+      </div>
+    </header>
+
+    <!-- ===== Summary ===== -->
+    <section class="summary">
+      <h2>Summary</h2>
+      <p>Principal Software Engineer with 9+ years building scalable web platforms across banking, healthcare, and marketing technology. Specialise in micro-frontend architecture (React) and .NET microservices / BFF design. Track record of leading delivery, modernising legacy estates, and turning engineering work into measurable business outcomes — faster releases, new revenue lines, and consolidated customer experiences.</p>
+    </section>
+
+    <!-- ===== Experience ===== -->
+    <section>
+      <h2>Experience</h2>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="left">
+            <div class="job-title">Associate Manager — Software Engineering</div>
+            <div class="job-company">BRAC Bank PLC</div>
+          </div>
+          <div class="job-meta">Jan 2026 — Present</div>
+        </div>
+        <div class="job-loc">Dhaka, Bangladesh</div>
+        <ul class="bullets">
+          <li>Lead engineering for the One App platform — a unified web + BFF experience consolidating fragmented digital banking products into one customer journey.</li>
+          <li>Architected the React micro-frontend shell and .NET BFF, enabling multiple product squads to ship independently against a shared shell, design system, and auth.</li>
+          <li>Drove CI/CD adoption across teams, reducing release lead time and shortening the path from feature idea to production.</li>
+          <li>Mentor engineers on system design, frontend patterns, and code quality through reviews, ADRs, and pair sessions.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="left">
+            <div class="job-title">Senior Software Engineer</div>
+            <div class="job-company">BRAC IT Services Limited</div>
+          </div>
+          <div class="job-meta">Feb 2024 — Dec 2025</div>
+        </div>
+        <div class="job-loc">Dhaka, Bangladesh</div>
+        <ul class="bullets">
+          <li>Modernised mission-critical internal applications running daily banking operations across MSSQL and Oracle estates.</li>
+          <li>Replaced manual reporting flows with self-serve dashboards, freeing operations staff and giving leadership cleaner data for faster decisions.</li>
+          <li>Built a custom internal library adopted across the team, standardising data-access patterns and cutting boilerplate for new features.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="left">
+            <div class="job-title">Software Engineer — Level II</div>
+            <div class="job-company">Wunderman Thompson Studios Dhaka</div>
+          </div>
+          <div class="job-meta">Sept 2022 — Jan 2024</div>
+        </div>
+        <div class="job-loc">Dhaka, Bangladesh</div>
+        <ul class="bullets">
+          <li>Delivered marketing and management platforms for global brands, supporting multi-market campaign launches and content delivery at scale.</li>
+          <li>Designed and built a portal management system on Node.js + PostgreSQL; modernised legacy AngularJS modules onto Angular.</li>
+          <li>Drove unit-test discipline (nUnit) and code review culture, lifting the quality bar across the studio.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="left">
+            <div class="job-title">Senior Officer — Information Technology</div>
+            <div class="job-company">BRAC Bank Limited</div>
+          </div>
+          <div class="job-meta">Sept 2021 — Aug 2022</div>
+        </div>
+        <div class="job-loc">Dhaka, Bangladesh</div>
+        <ul class="bullets">
+          <li>Shipped customer-facing products — debit card issuance, bill pay, loan document tracking, and FDR management — that streamlined high-volume banking journeys.</li>
+          <li>Built a low-latency stock trading platform with order and trade execution validation, expanding the bank's revenue lines beyond traditional retail products.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="left">
+            <div class="job-title">Software Engineer → Senior Software Engineer</div>
+            <div class="job-company">Niramoy Healthtech Limited</div>
+          </div>
+          <div class="job-meta">Aug 2018 — Sept 2021</div>
+        </div>
+        <div class="job-loc">Dhaka, Bangladesh · 3 yrs 2 mos</div>
+        <ul class="bullets">
+          <li>Built the EHR SaaS that brought clinics across Bangladesh online; promoted from SWE to Senior SWE within three years on platform impact.</li>
+          <li>Owned end-to-end delivery of patient/doctor portals (Vue.js) and the EHR core (AngularJS) on .NET Core APIs and Azure SQL.</li>
+          <li>Hardened the multi-tenant architecture for clinic onboarding, supporting recurring subscription growth.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="left">
+            <div class="job-title">Software Engineer (Intern → Full-time)</div>
+            <div class="job-company">LEADS Corporation Limited</div>
+          </div>
+          <div class="job-meta">Jun 2017 — Oct 2018</div>
+        </div>
+        <div class="job-loc">Dhaka, Bangladesh</div>
+        <ul class="bullets">
+          <li>Contributed to BankUltimus mobile banking, a product partner banks deployed to expand digital reach.</li>
+          <li>Built APIs (C#, ASP.NET MVC 5 Web API, Oracle) and AngularJS UIs; applied repository pattern for clean data, service, and application separation.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Skills ===== -->
+    <section>
+      <h2>Technical Skills</h2>
+      <dl class="skills-grid">
+        <dt>Languages</dt>
+        <dd>C#, JavaScript, TypeScript, SQL, T-SQL</dd>
+
+        <dt>Frontend</dt>
+        <dd>React, Angular, AngularJS, Vue.js, Micro-Frontend Architecture, HTML5 / CSS3</dd>
+
+        <dt>Backend</dt>
+        <dd>.NET 8 / .NET Core, ASP.NET MVC, Web API, Node.js, BFF & Microservices, REST, WSO2</dd>
+
+        <dt>Data</dt>
+        <dd>SQL Server, Oracle, PostgreSQL, Azure SQL, Query Optimisation</dd>
+
+        <dt>Cloud / DevOps</dt>
+        <dd>Azure, Docker, Azure DevOps, Git, CI/CD, nUnit</dd>
+
+        <dt>Practices</dt>
+        <dd>Clean Architecture, SOLID, DDD, Repository Pattern, Agile / Scrum, Code Review, Mentoring</dd>
+      </dl>
+    </section>
+
+    <!-- ===== Education + Certifications ===== -->
+    <section>
+      <div class="row-2">
+        <div>
+          <h2>Education</h2>
+          <div class="edu-item">
+            <div class="ed-title">B.Sc. in Computer Science &amp; Engineering</div>
+            <div>American International University-Bangladesh (AIUB)</div>
+            <div class="ed-meta">2013 — 2017 · Dhaka, Bangladesh</div>
+          </div>
+        </div>
+        <div>
+          <h2>Certifications</h2>
+          <ul class="cert-list">
+            <li><strong>ASP.NET Core: Middleware</strong> — LinkedIn Learning</li>
+            <li><strong>Using Docker and .NET Core</strong> — LinkedIn Learning</li>
+            <li><strong>Level Up: Advanced SQL</strong> — LinkedIn Learning</li>
+            <li><strong>Microservices Foundations</strong> — LinkedIn Learning</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">profile.kabir.io · me@khairulkabir.com</div>
+  </div>
+</body>
+</html>
