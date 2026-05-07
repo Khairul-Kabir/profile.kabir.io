@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" id="themeColorMeta" content="#f7b6c5" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="My Baby" />
+<title>My Baby — Care Tracker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%F0%9F%91%B6%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23f7b6c5'/%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' font-size='110'%3E%F0%9F%91%B6%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #fff7f4;
+    --surface: #ffffff;
+    --surface-alt: #fff1ec;
+    --ink: #2a2433;
+    --ink-soft: #6b6376;
+    --line: #efe4dd;
+    --pink: #f7b6c5;
+    --pink-deep: #e98aa1;
+    --mint: #b6e3d4;
+    --mint-deep: #5fb89c;
+    --amber: #ffd59e;
+    --amber-deep: #e09a4a;
+    --lilac: #d8c8f0;
+    --lilac-deep: #8d70c2;
+    --danger: #e26d6d;
+    --shadow: 0 6px 24px rgba(46, 28, 60, 0.08);
+    --radius: 16px;
+  }
+
+  /* Gender themes */
+  body.gender-girl { /* default — pinkish */ }
+  body.gender-boy {
+    --bg: #f1f6ff;
+    --surface: #ffffff;
+    --surface-alt: #e8f0ff;
+    --line: #dde6f5;
+    --pink: #a9c7f7;
+    --pink-deep: #5b86d6;
+    --lilac: #c5d6f4;
+    --lilac-deep: #4f6cc4;
+    --mint: #c0e1d8;
+  }
+  body.gender-neutral {
+    --bg: #f6f7fb;
+    --surface: #ffffff;
+    --surface-alt: #eef0f7;
+    --line: #e6e6ee;
+    --pink: #c8d0e3;
+    --pink-deep: #7787a6;
+    --lilac: #d6cfe8;
+    --lilac-deep: #8579a8;
+  }
+
+  /* Dark theme overlay */
+  body.theme-dark {
+    --bg: #161320;
+    --surface: #211c2e;
+    --surface-alt: #2a2438;
+    --ink: #f1eef7;
+    --ink-soft: #a8a0bb;
+    --line: #352e47;
+    --shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  }
+  body.theme-dark.gender-boy {
+    --bg: #0f1726;
+    --surface: #18223a;
+    --surface-alt: #1f2a45;
+    --line: #2c3a5a;
+  }
+  body.theme-dark.gender-girl {
+    --bg: #1f1620;
+    --surface: #2a1f2c;
+    --surface-alt: #352637;
+    --line: #44354a;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: background .3s ease, color .3s ease;
+  }
+  .app {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .brand-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink), var(--lilac));
+    display: grid; place-items: center;
+    font-size: 22px;
+  }
+  .brand h1 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .brand small {
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+  .icon-btn {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: transform .12s ease;
+  }
+  .icon-btn:active { transform: scale(0.96); }
+
+  /* Status banner */
+  .status {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--lilac) 100%);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .status-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+  }
+  .status-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+  .status-meta {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 4px;
+  }
+  .status.stale { background: linear-gradient(135deg, #ffb38a, #e26d6d); }
+
+  /* Quick actions */
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .action {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--ink);
+    transition: transform .12s ease, box-shadow .12s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .action:active { transform: scale(0.97); }
+  .action:hover { box-shadow: var(--shadow); }
+  .action-icon {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    font-size: 20px;
+  }
+  .action.feed .action-icon { background: var(--pink); }
+  .action.diaper .action-icon { background: var(--mint); }
+  .action.sleep .action-icon { background: var(--lilac); }
+  .action.note .action-icon { background: var(--amber); }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .card h2 {
+    margin: 0 0 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card h2 .meta {
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+
+  /* Stats grid */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .stat {
+    background: var(--surface-alt);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .stat-sub {
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+
+  /* Progress bar */
+  .progress { margin-top: 12px; }
+  .progress-bar {
+    background: var(--surface-alt);
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--mint-deep), var(--pink-deep));
+    transition: width .3s ease;
+  }
+  .progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+
+  /* Log list */
+  .log { list-style: none; margin: 0; padding: 0; }
+  .log-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .log-item:last-child { border-bottom: 0; }
+  .log-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .log-icon.feed { background: var(--pink); }
+  .log-icon.diaper { background: var(--mint); }
+  .log-icon.sleep { background: var(--lilac); }
+  .log-icon.note { background: var(--amber); }
+  .log-body { flex: 1; min-width: 0; }
+  .log-title { font-size: 14px; font-weight: 600; }
+  .log-sub { font-size: 12px; color: var(--ink-soft); }
+  .log-actions { display: flex; gap: 4px; }
+  .log-actions button {
+    background: transparent;
+    border: 0;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 6px;
+    border-radius: 6px;
+  }
+  .log-actions button:hover { background: var(--surface-alt); }
+  .empty {
+    text-align: center;
+    padding: 20px 10px;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  /* History bars */
+  .history {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 120px;
+    margin-top: 10px;
+  }
+  .history-day {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .history-bar-wrap {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    background: var(--surface-alt);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .history-bar {
+    width: 100%;
+    background: linear-gradient(180deg, var(--pink-deep), var(--lilac-deep));
+    border-radius: 8px 8px 0 0;
+    min-height: 2px;
+    transition: height .3s ease;
+  }
+  .history-day.today .history-bar {
+    background: linear-gradient(180deg, var(--mint-deep), var(--mint));
+  }
+  .history-label { font-size: 10px; color: var(--ink-soft); }
+  .history-value { font-size: 10px; font-weight: 600; }
+
+  /* Modal */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(20, 14, 30, 0.45);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 100;
+  }
+  .overlay.open { display: flex; }
+  .sheet {
+    background: var(--surface);
+    color: var(--ink);
+    width: 100%;
+    max-width: 560px;
+    border-radius: 20px 20px 0 0;
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+    animation: slideUp .25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .sheet h3 { margin: 0 0 14px; font-size: 18px; }
+  .field { margin-bottom: 12px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 15px;
+    background: var(--surface-alt);
+    color: var(--ink);
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--pink-deep);
+    background: var(--surface);
+  }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+
+  .seg {
+    display: flex;
+    background: var(--surface-alt);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .seg button {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    padding: 10px 6px;
+    border-radius: 9px;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    font-family: inherit;
+  }
+  .seg button.active {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    font-weight: 600;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: 0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--ink); color: var(--surface); }
+  .btn-secondary { background: var(--surface-alt); color: var(--ink); }
+  .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+  .btn-row .btn { flex: 1; }
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--ink-soft);
+    font-size: 11px;
+  }
+  footer a { color: var(--ink-soft); }
+
+  /* Install banner (bottom sheet, not modal) */
+  .install-banner {
+    position: fixed;
+    left: 12px; right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    max-width: 540px;
+    margin: 0 auto;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    z-index: 90;
+    display: none;
+    animation: slideUp .3s ease;
+  }
+  .install-banner.show { display: block; }
+  .install-banner .ib-title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .install-banner .ib-text {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .install-banner .ib-steps {
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--surface-alt);
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .install-banner .ib-steps b { font-weight: 600; }
+  .install-banner .ib-actions {
+    display: flex; gap: 8px;
+  }
+  .install-banner .ib-actions .btn { padding: 10px; font-size: 14px; }
+
+  /* Welcome toast (after install) */
+  .toast {
+    position: fixed;
+    left: 12px; right: 12px;
+    top: calc(12px + env(safe-area-inset-top));
+    max-width: 540px;
+    margin: 0 auto;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--pink-deep);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    z-index: 95;
+    display: none;
+    animation: slideDown .3s ease;
+  }
+  .toast.show { display: block; }
+  .toast .t-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .toast .t-text { font-size: 13px; color: var(--ink-soft); margin-bottom: 8px; }
+  .toast .t-actions { display: flex; gap: 8px; }
+  .toast .t-actions button {
+    flex: 1;
+    border: 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .toast .t-primary { background: var(--ink); color: var(--surface); }
+  .toast .t-secondary { background: var(--surface-alt); color: var(--ink); }
+  @keyframes slideDown {
+    from { transform: translateY(-120%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (min-width: 600px) {
+    .actions { gap: 14px; }
+  }
+</style>
+</head>
+<body class="gender-girl theme-light">
+<div class="app">
+
+  <header>
+    <div class="brand" id="brandTrigger">
+      <div class="brand-avatar" id="brandAvatar">👶</div>
+      <div>
+        <h1 id="babyName">My Baby</h1>
+        <small id="babyAge">Tap to set up profile</small>
+      </div>
+    </div>
+    <button class="icon-btn" id="settingsBtn" title="Settings">⚙️</button>
+  </header>
+
+  <div class="status" id="statusBanner">
+    <div class="status-row">
+      <div>
+        <div class="status-label">Last feed</div>
+        <div class="status-value" id="sinceFeed">—</div>
+        <div class="status-meta" id="sinceFeedMeta">No feeds logged yet</div>
+      </div>
+      <div style="text-align:right">
+        <div class="status-label">Last diaper</div>
+        <div class="status-value" id="sinceDiaper" style="font-size:18px">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="action feed" data-action="feed">
+      <div class="action-icon">🍼</div>
+      <div>Feed</div>
+    </div>
+    <div class="action diaper" data-action="diaper">
+      <div class="action-icon">💧</div>
+      <div>Diaper</div>
+    </div>
+    <div class="action sleep" data-action="sleep">
+      <div class="action-icon">😴</div>
+      <div>Sleep</div>
+    </div>
+    <div class="action note" data-action="note">
+      <div class="action-icon">📝</div>
+      <div>Note</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Today <span class="meta" id="todayDate"></span></h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Feeds</div>
+        <div class="stat-value" id="statFeedCount">0</div>
+        <div class="stat-sub" id="statFeedAmount">0 ml</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Diapers</div>
+        <div class="stat-value" id="statDiaperCount">0</div>
+        <div class="stat-sub" id="statDiaperBreak">0 wet · 0 dirty</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Sleep</div>
+        <div class="stat-value" id="statSleepHours">0h</div>
+        <div class="stat-sub" id="statSleepCount">0 sessions</div>
+      </div>
+    </div>
+    <div class="progress" id="progressWrap" style="display:none">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-text">
+        <span id="progressLabel">Daily intake</span>
+        <span id="progressNumbers">0 / 0 ml</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Today's log <span class="meta" id="logCount"></span></h2>
+    <ul class="log" id="logList"></ul>
+    <div class="empty" id="logEmpty">No entries yet — tap a quick action above.</div>
+  </div>
+
+  <div class="card">
+    <h2>Last 7 days <span class="meta">total intake (ml)</span></h2>
+    <div class="history" id="historyChart"></div>
+  </div>
+
+  <footer>
+    Local-only — your data stays on this device.
+    <br>
+    <a href="#" id="exportLink">Export JSON</a> · <a href="#" id="resetLink">Reset all</a>
+  </footer>
+</div>
+
+<!-- Entry modal -->
+<div class="overlay" id="entryOverlay">
+  <div class="sheet">
+    <h3 id="entryTitle">Add entry</h3>
+    <form id="entryForm"></form>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="overlay" id="settingsOverlay">
+  <div class="sheet">
+    <h3>Baby profile</h3>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="cfgName" placeholder="My Baby" />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Date of birth</label>
+        <input type="date" id="cfgDob" />
+      </div>
+      <div class="field">
+        <label>Daily target (ml)</label>
+        <input type="number" id="cfgTarget" placeholder="e.g. 600" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Gender</label>
+      <div class="seg" id="cfgGender">
+        <button type="button" data-val="girl">Girl</button>
+        <button type="button" data-val="boy">Boy</button>
+        <button type="button" data-val="neutral">Neutral</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Theme</label>
+      <div class="seg" id="cfgTheme">
+        <button type="button" data-val="light">Light</button>
+        <button type="button" data-val="dark">Dark</button>
+        <button type="button" data-val="auto">Auto</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" type="button" id="cfgCancel">Cancel</button>
+      <button class="btn btn-primary" type="button" id="cfgSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Install prompt banner -->
+<div class="install-banner" id="installBanner" role="dialog" aria-label="Install app">
+  <div class="ib-title">📲 <span id="ibTitle">Install My Baby</span></div>
+  <div class="ib-text" id="ibText">
+    Install this app on your phone for a smoother, full-screen experience. Your data stays on your device — nothing is uploaded.
+  </div>
+  <div class="ib-steps" id="ibSteps" style="display:none"></div>
+  <div class="ib-actions">
+    <button class="btn btn-secondary" id="ibLater" type="button">Not now</button>
+    <button class="btn btn-primary" id="ibInstall" type="button">Install</button>
+  </div>
+</div>
+
+<!-- Post-install welcome toast -->
+<div class="toast" id="welcomeToast" role="status">
+  <div class="t-title">🎉 Installed!</div>
+  <div class="t-text">All your baby's data is saved <b>locally on this device only</b>. Nothing is sent anywhere. Use <b>Export JSON</b> anytime to back it up.</div>
+  <div class="t-actions">
+    <button class="t-secondary" id="welcomeDismiss" type="button">Got it</button>
+    <button class="t-primary" id="welcomeExport" type="button">Export now</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const STORE_KEY = "mybaby.tracker.v1";
+  const FLAG_INSTALL_DISMISS = "mybaby.installDismissed";
+  const FLAG_WELCOMED = "mybaby.welcomed";
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => document.querySelectorAll(sel);
+
+  // ---------- Inline manifest (so the page is installable on its own) ----------
+  (() => {
+    const manifest = {
+      name: "My Baby — Care Tracker",
+      short_name: "My Baby",
+      description: "Track feeds, diapers, sleep — local-only.",
+      start_url: location.pathname.split("/").pop() || "./",
+      scope: "./",
+      display: "standalone",
+      orientation: "portrait",
+      background_color: "#fff7f4",
+      theme_color: "#f7b6c5",
+      icons: [{
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%23f7b6c5'/%3E%3Ctext x='50%25' y='62%25' text-anchor='middle' font-size='320'%3E%F0%9F%91%B6%3C/text%3E%3C/svg%3E",
+        sizes: "192x192 512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }]
+    };
+    try {
+      const url = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" }));
+      const link = document.createElement("link");
+      link.rel = "manifest";
+      link.href = url;
+      document.head.appendChild(link);
+    } catch (e) { /* ignore */ }
+  })();
+
+  const state = load();
+  let editingId = null;
+  let tickTimer = null;
+  let deferredInstall = null;
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        s.profile = Object.assign({ name: "My Baby", dob: "", targetMl: 0, gender: "girl", theme: "light" }, s.profile || {});
+        return s;
+      }
+    } catch (e) {}
+    return {
+      profile: { name: "My Baby", dob: "", targetMl: 0, gender: "girl", theme: "light" },
+      entries: []
+    };
+  }
+
+  function save() { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+
+  function rid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  function fmtTime(iso) {
+    return new Date(iso).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  }
+  function fmtDuration(ms) {
+    if (ms < 0) ms = 0;
+    const m = Math.floor(ms / 60000);
+    if (m < 60) return `${m}m`;
+    const h = Math.floor(m / 60);
+    const rem = m % 60;
+    return rem ? `${h}h ${rem}m` : `${h}h`;
+  }
+  function fmtAge(dob) {
+    if (!dob) return "Tap to set up profile";
+    const start = new Date(dob);
+    const now = new Date();
+    let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+    if (now.getDate() < start.getDate()) months -= 1;
+    if (months < 1) {
+      const days = Math.floor((now - start) / 86400000);
+      return `${days} day${days === 1 ? "" : "s"} old`;
+    }
+    if (months < 24) return `${months} month${months === 1 ? "" : "s"} old`;
+    const years = Math.floor(months / 12);
+    const rem = months % 12;
+    return rem ? `${years}y ${rem}m old` : `${years} years old`;
+  }
+  function todayKey(d = new Date()) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+  function entryDateKey(e) { return todayKey(new Date(e.at)); }
+
+  // ---------- Theme application ----------
+  const THEME_COLORS = {
+    girl: { light: "#f7b6c5", dark: "#2a1f2c" },
+    boy:  { light: "#a9c7f7", dark: "#18223a" },
+    neutral: { light: "#c8d0e3", dark: "#211c2e" }
+  };
+  function resolveTheme(theme) {
+    if (theme === "auto") {
+      return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    return theme;
+  }
+  function applyAppearance() {
+    const gender = state.profile.gender || "girl";
+    const theme = resolveTheme(state.profile.theme || "light");
+    document.body.classList.remove("gender-girl", "gender-boy", "gender-neutral");
+    document.body.classList.add("gender-" + gender);
+    document.body.classList.remove("theme-light", "theme-dark");
+    document.body.classList.add("theme-" + theme);
+    const meta = $("#themeColorMeta");
+    if (meta) meta.setAttribute("content", THEME_COLORS[gender][theme]);
+  }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => {
+    if ((state.profile.theme || "light") === "auto") applyAppearance();
+  });
+
+  // ---------- Rendering ----------
+  function renderProfile() {
+    $("#babyName").textContent = state.profile.name || "My Baby";
+    $("#babyAge").textContent = fmtAge(state.profile.dob);
+    $("#todayDate").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+  }
+
+  function todayEntries() {
+    const k = todayKey();
+    return state.entries.filter(e => entryDateKey(e) === k).sort((a, b) => new Date(b.at) - new Date(a.at));
+  }
+
+  function renderStatus() {
+    const feeds = state.entries.filter(e => e.type === "feed").sort((a, b) => new Date(b.at) - new Date(a.at));
+    const diapers = state.entries.filter(e => e.type === "diaper").sort((a, b) => new Date(b.at) - new Date(a.at));
+    const banner = $("#statusBanner");
+    if (feeds.length) {
+      const since = Date.now() - new Date(feeds[0].at).getTime();
+      $("#sinceFeed").textContent = fmtDuration(since) + " ago";
+      const last = feeds[0];
+      const meta = `${fmtTime(last.at)} · ${last.amount ? last.amount + " ml" : labelFeed(last.feedType)}`;
+      $("#sinceFeedMeta").textContent = meta;
+      banner.classList.toggle("stale", since > 4 * 3600 * 1000);
+    } else {
+      $("#sinceFeed").textContent = "—";
+      $("#sinceFeedMeta").textContent = "No feeds logged yet";
+      banner.classList.remove("stale");
+    }
+    $("#sinceDiaper").textContent = diapers.length
+      ? fmtDuration(Date.now() - new Date(diapers[0].at).getTime()) + " ago"
+      : "—";
+  }
+
+  function labelFeed(t) {
+    return ({ breast_l: "Left breast", breast_r: "Right breast", breast: "Breast", formula: "Formula", solids: "Solids", water: "Water" })[t] || "Feed";
+  }
+  function labelDiaper(t) {
+    return ({ wet: "Wet", dirty: "Dirty", both: "Wet + dirty" })[t] || "Diaper";
+  }
+
+  function renderStats() {
+    const today = todayEntries();
+    const feeds = today.filter(e => e.type === "feed");
+    const diapers = today.filter(e => e.type === "diaper");
+    const sleeps = today.filter(e => e.type === "sleep");
+
+    const totalMl = feeds.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+    $("#statFeedCount").textContent = feeds.length;
+    $("#statFeedAmount").textContent = `${totalMl} ml`;
+
+    const wet = diapers.filter(e => e.diaperType === "wet" || e.diaperType === "both").length;
+    const dirty = diapers.filter(e => e.diaperType === "dirty" || e.diaperType === "both").length;
+    $("#statDiaperCount").textContent = diapers.length;
+    $("#statDiaperBreak").textContent = `${wet} wet · ${dirty} dirty`;
+
+    const sleepMin = sleeps.reduce((s, e) => s + (Number(e.durationMin) || 0), 0);
+    const sh = Math.floor(sleepMin / 60);
+    const sm = sleepMin % 60;
+    $("#statSleepHours").textContent = sh ? `${sh}h ${sm}m` : `${sm}m`;
+    $("#statSleepCount").textContent = `${sleeps.length} session${sleeps.length === 1 ? "" : "s"}`;
+
+    const target = Number(state.profile.targetMl) || 0;
+    if (target > 0) {
+      $("#progressWrap").style.display = "";
+      const pct = Math.min(100, Math.round((totalMl / target) * 100));
+      $("#progressFill").style.width = pct + "%";
+      $("#progressNumbers").textContent = `${totalMl} / ${target} ml (${pct}%)`;
+    } else {
+      $("#progressWrap").style.display = "none";
+    }
+  }
+
+  function renderLog() {
+    const list = $("#logList");
+    const empty = $("#logEmpty");
+    list.innerHTML = "";
+    const today = todayEntries();
+    $("#logCount").textContent = today.length ? `${today.length} entries` : "";
+    if (!today.length) { empty.style.display = ""; return; }
+    empty.style.display = "none";
+    today.forEach(e => {
+      const li = document.createElement("li");
+      li.className = "log-item";
+      li.innerHTML = `
+        <div class="log-icon ${e.type}">${iconFor(e)}</div>
+        <div class="log-body">
+          <div class="log-title">${titleFor(e)}</div>
+          <div class="log-sub">${subFor(e)}</div>
+        </div>
+        <div class="log-actions">
+          <button data-edit="${e.id}" title="Edit">✏️</button>
+          <button data-del="${e.id}" title="Delete">🗑️</button>
+        </div>
+      `;
+      list.appendChild(li);
+    });
+    list.querySelectorAll("[data-edit]").forEach(b => b.addEventListener("click", () => openEntry(b.dataset.edit)));
+    list.querySelectorAll("[data-del]").forEach(b => b.addEventListener("click", () => deleteEntry(b.dataset.del)));
+  }
+
+  function iconFor(e) {
+    return { feed: "🍼", diaper: "💧", sleep: "😴", note: "📝" }[e.type] || "•";
+  }
+  function titleFor(e) {
+    if (e.type === "feed") return `${labelFeed(e.feedType)}${e.amount ? ` — ${e.amount} ml` : ""}`;
+    if (e.type === "diaper") return labelDiaper(e.diaperType);
+    if (e.type === "sleep") return `Sleep — ${fmtDuration((e.durationMin || 0) * 60000)}`;
+    if (e.type === "note") return "Note";
+    return e.type;
+  }
+  function subFor(e) {
+    const time = fmtTime(e.at);
+    if (e.note) return `${time} · ${e.note}`;
+    return time;
+  }
+
+  function renderHistory() {
+    const wrap = $("#historyChart");
+    wrap.innerHTML = "";
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = todayKey(d);
+      const total = state.entries
+        .filter(e => e.type === "feed" && entryDateKey(e) === key)
+        .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+      days.push({ date: d, key, total, isToday: i === 0 });
+    }
+    const max = Math.max(...days.map(d => d.total), 1);
+    days.forEach(d => {
+      const div = document.createElement("div");
+      div.className = "history-day" + (d.isToday ? " today" : "");
+      const pct = (d.total / max) * 100;
+      div.innerHTML = `
+        <div class="history-value">${d.total || ""}</div>
+        <div class="history-bar-wrap">
+          <div class="history-bar" style="height:${pct}%"></div>
+        </div>
+        <div class="history-label">${d.date.toLocaleDateString(undefined, { weekday: "short" }).slice(0, 2)}</div>
+      `;
+      wrap.appendChild(div);
+    });
+  }
+
+  function renderAll() {
+    applyAppearance();
+    renderProfile();
+    renderStatus();
+    renderStats();
+    renderLog();
+    renderHistory();
+  }
+
+  // ---------- Entry CRUD ----------
+  function openEntry(id) {
+    const overlay = $("#entryOverlay");
+    const form = $("#entryForm");
+    let entry;
+    if (id) {
+      entry = state.entries.find(e => e.id === id);
+      if (!entry) return;
+      editingId = id;
+    } else {
+      editingId = null;
+    }
+    const type = entry ? entry.type : openEntry._pendingType;
+    $("#entryTitle").textContent = (entry ? "Edit " : "Add ") + type;
+    form.innerHTML = formFor(type, entry);
+    overlay.classList.add("open");
+    setTimeout(() => form.querySelector("input,select,textarea")?.focus(), 80);
+  }
+
+  function closeEntry() {
+    $("#entryOverlay").classList.remove("open");
+    editingId = null;
+  }
+
+  function formFor(type, entry) {
+    const at = entry ? new Date(entry.at) : new Date();
+    at.setMinutes(at.getMinutes() - at.getTimezoneOffset());
+    const atLocal = at.toISOString().slice(0, 16);
+
+    let body = "";
+    if (type === "feed") {
+      const ft = entry?.feedType || "breast";
+      body = `
+        <div class="field">
+          <label>Type</label>
+          <div class="seg" data-name="feedType">
+            ${["breast_l","breast_r","formula","solids","water"].map(t =>
+              `<button type="button" data-val="${t}" class="${t===ft?"active":""}">${labelFeed(t)}</button>`
+            ).join("")}
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Amount (ml)</label>
+            <input type="number" name="amount" min="0" placeholder="e.g. 90" value="${entry?.amount ?? ""}" />
+          </div>
+          <div class="field">
+            <label>Time</label>
+            <input type="datetime-local" name="at" value="${atLocal}" />
+          </div>
+        </div>
+      `;
+    } else if (type === "diaper") {
+      const dt = entry?.diaperType || "wet";
+      body = `
+        <div class="field">
+          <label>Type</label>
+          <div class="seg" data-name="diaperType">
+            ${["wet","dirty","both"].map(t =>
+              `<button type="button" data-val="${t}" class="${t===dt?"active":""}">${labelDiaper(t)}</button>`
+            ).join("")}
+          </div>
+        </div>
+        <div class="field">
+          <label>Time</label>
+          <input type="datetime-local" name="at" value="${atLocal}" />
+        </div>
+      `;
+    } else if (type === "sleep") {
+      body = `
+        <div class="row">
+          <div class="field">
+            <label>Duration (min)</label>
+            <input type="number" name="durationMin" min="0" value="${entry?.durationMin ?? ""}" placeholder="e.g. 45" />
+          </div>
+          <div class="field">
+            <label>Started at</label>
+            <input type="datetime-local" name="at" value="${atLocal}" />
+          </div>
+        </div>
+      `;
+    } else if (type === "note") {
+      body = `
+        <div class="field">
+          <label>Time</label>
+          <input type="datetime-local" name="at" value="${atLocal}" />
+        </div>
+      `;
+    }
+
+    return `
+      ${body}
+      <div class="field">
+        <label>Notes (optional)</label>
+        <textarea name="note" rows="2" placeholder="Anything to remember…">${entry?.note ?? ""}</textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+        <button class="btn btn-primary" type="submit">${entry ? "Save" : "Add"}</button>
+      </div>
+      <input type="hidden" name="type" value="${type}" />
+    `;
+  }
+
+  function deleteEntry(id) {
+    if (!confirm("Delete this entry?")) return;
+    state.entries = state.entries.filter(e => e.id !== id);
+    save();
+    renderAll();
+  }
+
+  // ---------- Wiring ----------
+  $$(".action").forEach(a => {
+    a.addEventListener("click", () => {
+      openEntry._pendingType = a.dataset.action;
+      openEntry(null);
+    });
+  });
+
+  $("#entryOverlay").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeEntry();
+  });
+
+  $("#entryForm").addEventListener("click", (e) => {
+    const seg = e.target.closest(".seg");
+    if (seg && e.target.tagName === "BUTTON") {
+      seg.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+    }
+    if (e.target.matches("[data-close]")) closeEntry();
+  });
+
+  $("#entryForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const type = fd.get("type");
+    const at = fd.get("at") ? new Date(fd.get("at")).toISOString() : new Date().toISOString();
+    const note = (fd.get("note") || "").toString().trim();
+    const entry = editingId
+      ? state.entries.find(x => x.id === editingId)
+      : { id: rid(), type, at, note };
+
+    entry.at = at;
+    entry.note = note;
+
+    if (type === "feed") {
+      entry.feedType = e.currentTarget.querySelector('[data-name="feedType"] .active')?.dataset.val || "breast";
+      entry.amount = Number(fd.get("amount")) || 0;
+    } else if (type === "diaper") {
+      entry.diaperType = e.currentTarget.querySelector('[data-name="diaperType"] .active')?.dataset.val || "wet";
+    } else if (type === "sleep") {
+      entry.durationMin = Number(fd.get("durationMin")) || 0;
+    }
+
+    if (!editingId) state.entries.push(entry);
+    save();
+    closeEntry();
+    renderAll();
+  });
+
+  // Settings
+  $("#settingsBtn").addEventListener("click", openSettings);
+  $("#brandTrigger").addEventListener("click", openSettings);
+  function openSettings() {
+    $("#cfgName").value = state.profile.name || "";
+    $("#cfgDob").value = state.profile.dob || "";
+    $("#cfgTarget").value = state.profile.targetMl || "";
+    setSeg("#cfgGender", state.profile.gender || "girl");
+    setSeg("#cfgTheme", state.profile.theme || "light");
+    $("#settingsOverlay").classList.add("open");
+  }
+  function setSeg(sel, val) {
+    $$(sel + " button").forEach(b => b.classList.toggle("active", b.dataset.val === val));
+  }
+  function getSeg(sel) {
+    return $(sel + " button.active")?.dataset.val;
+  }
+  $$("#cfgGender button, #cfgTheme button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      btn.parentElement.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+  $("#settingsOverlay").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) $("#settingsOverlay").classList.remove("open");
+  });
+  $("#cfgCancel").addEventListener("click", () => $("#settingsOverlay").classList.remove("open"));
+  $("#cfgSave").addEventListener("click", () => {
+    state.profile.name = $("#cfgName").value.trim() || "My Baby";
+    state.profile.dob = $("#cfgDob").value || "";
+    state.profile.targetMl = Number($("#cfgTarget").value) || 0;
+    state.profile.gender = getSeg("#cfgGender") || "girl";
+    state.profile.theme = getSeg("#cfgTheme") || "light";
+    save();
+    $("#settingsOverlay").classList.remove("open");
+    renderAll();
+  });
+
+  // Export & reset
+  function exportData() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `my-baby-${todayKey()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  $("#exportLink").addEventListener("click", (e) => { e.preventDefault(); exportData(); });
+  $("#resetLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!confirm("Erase all data on this device? This cannot be undone.")) return;
+    localStorage.removeItem(STORE_KEY);
+    location.reload();
+  });
+
+  // ---------- Install detection & banner ----------
+  const isStandalone = () =>
+    matchMedia("(display-mode: standalone)").matches ||
+    matchMedia("(display-mode: fullscreen)").matches ||
+    window.navigator.standalone === true;
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isAndroid = /android/i.test(ua);
+  const isMobile = isIOS || isAndroid || matchMedia("(max-width: 768px)").matches;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstall = e;
+    if (!isStandalone() && !sessionStorage.getItem(FLAG_INSTALL_DISMISS)) {
+      showInstallBanner("native");
+    }
+  });
+
+  window.addEventListener("appinstalled", () => {
+    hideInstallBanner();
+    deferredInstall = null;
+  });
+
+  function showInstallBanner(mode) {
+    const banner = $("#installBanner");
+    const stepsEl = $("#ibSteps");
+    const installBtn = $("#ibInstall");
+    if (mode === "ios") {
+      stepsEl.innerHTML = `On iPhone/iPad: tap the <b>Share</b> button <span style="display:inline-block;border:1px solid var(--line);border-radius:4px;padding:0 4px">⬆︎</span> below, then <b>Add to Home Screen</b>.`;
+      stepsEl.style.display = "";
+      installBtn.textContent = "Got it";
+    } else if (mode === "manual") {
+      stepsEl.innerHTML = `Open your browser menu (⋮) and choose <b>Install app</b> or <b>Add to Home Screen</b>.`;
+      stepsEl.style.display = "";
+      installBtn.textContent = "Got it";
+    } else {
+      stepsEl.style.display = "none";
+      installBtn.textContent = "Install";
+    }
+    banner.classList.add("show");
+  }
+  function hideInstallBanner() { $("#installBanner").classList.remove("show"); }
+
+  $("#ibLater").addEventListener("click", () => {
+    sessionStorage.setItem(FLAG_INSTALL_DISMISS, "1");
+    hideInstallBanner();
+  });
+  $("#ibInstall").addEventListener("click", async () => {
+    if (deferredInstall) {
+      deferredInstall.prompt();
+      try {
+        const choice = await deferredInstall.userChoice;
+        if (choice.outcome !== "accepted") {
+          sessionStorage.setItem(FLAG_INSTALL_DISMISS, "1");
+        }
+      } catch (e) {}
+      deferredInstall = null;
+      hideInstallBanner();
+    } else {
+      hideInstallBanner();
+    }
+  });
+
+  // ---------- Welcome toast (shown once after install / in standalone) ----------
+  function maybeShowWelcome() {
+    if (!isStandalone()) return;
+    if (localStorage.getItem(FLAG_WELCOMED)) return;
+    const toast = $("#welcomeToast");
+    toast.classList.add("show");
+  }
+  $("#welcomeDismiss").addEventListener("click", () => {
+    localStorage.setItem(FLAG_WELCOMED, "1");
+    $("#welcomeToast").classList.remove("show");
+  });
+  $("#welcomeExport").addEventListener("click", () => {
+    localStorage.setItem(FLAG_WELCOMED, "1");
+    $("#welcomeToast").classList.remove("show");
+    exportData();
+  });
+
+  // First-load decision
+  function evaluateInstallUX() {
+    if (isStandalone()) {
+      maybeShowWelcome();
+      return;
+    }
+    if (!isMobile) return; // only nudge on mobile per spec
+    if (sessionStorage.getItem(FLAG_INSTALL_DISMISS)) return;
+    // Wait briefly for beforeinstallprompt; if it doesn't fire, show iOS / manual instructions
+    setTimeout(() => {
+      if (deferredInstall) return; // already showing native banner
+      if (isIOS) showInstallBanner("ios");
+      else showInstallBanner("manual");
+    }, 1200);
+  }
+
+  // Live tick — update "time since" every minute
+  function startTick() {
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = setInterval(renderStatus, 60_000);
+  }
+
+  renderAll();
+  startTick();
+  evaluateInstallUX();
+})();
+</script>
+</body>
+</html>
