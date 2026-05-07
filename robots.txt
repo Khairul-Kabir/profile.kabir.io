@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /forms/
+Disallow: /node_modules/
+
+Sitemap: https://khairulkabir.com/sitemap.xml
