@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin · Md. Khairul Kabir</title>
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --surface: #111826;
+      --surface-2: #1a2233;
+      --border: #243049;
+      --text: #e6ecf5;
+      --text-dim: #9aa6bd;
+      --accent: #4f8cff;
+      --accent-hover: #6aa0ff;
+      --danger: #ef4d57;
+      --success: #2ecc71;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+
+    /* Login */
+    .login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+    }
+    .login-card h1 {
+      margin: 0 0 4px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .login-card .sub {
+      color: var(--text-dim);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .field { margin-bottom: 16px; }
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    input[type=text], input[type=email], input[type=url], input[type=password], input[type=number], textarea, select {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-dim); background: transparent; }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: #d23843; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+    .alert {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .alert-error { background: rgba(239,77,87,.12); color: #ff8c93; border: 1px solid rgba(239,77,87,.3); }
+    .alert-info { background: rgba(79,140,255,.1); color: #8fb5ff; border: 1px solid rgba(79,140,255,.25); }
+    .alert-success { background: rgba(46,204,113,.1); color: #6ee29a; border: 1px solid rgba(46,204,113,.3); }
+
+    /* Editor */
+    .editor { display: none; }
+    .editor.active { display: block; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11,15,23,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .topbar-title { font-weight: 600; font-size: 16px; margin-right: auto; }
+    .topbar-status { font-size: 12px; color: var(--text-dim); }
+    .topbar-status.dirty { color: #ffb84d; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .tab {
+      padding: 10px 16px;
+      cursor: pointer;
+      color: var(--text-dim);
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .card-title { font-weight: 600; font-size: 15px; margin: 0; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .help {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+    .tag-help { font-size: 11px; color: var(--text-dim); }
+
+    .item-actions { display: flex; gap: 6px; }
+
+    details { margin-bottom: 12px; }
+    details summary {
+      cursor: pointer;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border-radius: 8px;
+      list-style: none;
+      font-weight: 500;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after {
+      content: '▾';
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+    details[open] summary::after { content: '▴'; }
+    details > div { padding: 14px; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; }
+
+    code {
+      background: var(--surface-2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--accent);
+    }
+    .footer-note {
+      margin-top: 32px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+    .footer-note strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- ============ LOGIN ============ -->
+  <div class="login-wrap" id="loginWrap">
+    <form class="login-card" id="loginForm" autocomplete="off">
+      <h1><i class="bi bi-shield-lock"></i> Admin</h1>
+      <p class="sub">Enter password to manage profile content.</p>
+      <div class="alert alert-error" id="loginError" style="display:none;">Incorrect password.</div>
+      <div class="field">
+        <label for="pwd">Password</label>
+        <input type="password" id="pwd" autofocus required>
+      </div>
+      <button type="submit" class="btn" style="width:100%; justify-content:center;">
+        <i class="bi bi-unlock"></i> Sign in
+      </button>
+      <p class="help" style="margin-top:16px;">
+        Default password: <code>admin123</code> — change it by replacing <code>PASSWORD_HASH</code> in this file.
+        Generate a new hash with <a href="#" id="hashHelpToggle">this snippet</a>.
+      </p>
+      <div id="hashHelp" style="display:none; margin-top:12px; font-size:12px; color: var(--text-dim);">
+        Open the browser console on this page and run:
+        <pre style="background: var(--surface-2); padding: 10px; border-radius: 6px; overflow-x:auto; margin-top: 6px;"><code>(async p =&gt; {
+  const b = new TextEncoder().encode(p);
+  const h = await crypto.subtle.digest('SHA-256', b);
+  console.log([...new Uint8Array(h)].map(x=&gt;x.toString(16).padStart(2,'0')).join(''));
+})('YOUR_NEW_PASSWORD');</code></pre>
+        Copy the printed hash and replace the value of <code>PASSWORD_HASH</code> at the top of the script in this file.
+      </div>
+    </form>
+  </div>
+
+  <!-- ============ EDITOR ============ -->
+  <div class="editor" id="editor">
+    <div class="topbar">
+      <span class="topbar-title"><i class="bi bi-pencil-square"></i> Profile Editor</span>
+      <span class="topbar-status" id="status">Loaded</span>
+      <button class="btn btn-ghost btn-sm" id="reloadBtn" title="Reload from profile.json (discards local changes)"><i class="bi bi-arrow-clockwise"></i> Reload</button>
+      <button class="btn btn-sm" id="saveBtn"><i class="bi bi-save"></i> Save (cache)</button>
+      <button class="btn btn-sm" id="downloadBtn"><i class="bi bi-download"></i> Download JSON</button>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Logout</button>
+    </div>
+
+    <div class="container">
+      <div id="loadAlert"></div>
+
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="hero">Hero</button>
+        <button class="tab" data-tab="about">About</button>
+        <button class="tab" data-tab="stats">Stats</button>
+        <button class="tab" data-tab="skills">Skills</button>
+        <button class="tab" data-tab="experience">Experience</button>
+        <button class="tab" data-tab="projects">Projects</button>
+        <button class="tab" data-tab="testimonials">Testimonials</button>
+        <button class="tab" data-tab="education">Education</button>
+        <button class="tab" data-tab="contact">Contact</button>
+      </div>
+
+      <!-- Hero -->
+      <div class="panel active" data-panel="hero">
+        <div class="card">
+          <div class="grid-2">
+            <div class="field">
+              <label>Greeting</label>
+              <input type="text" data-bind="hero.greeting">
+            </div>
+            <div class="field">
+              <label>Name</label>
+              <input type="text" data-bind="hero.name">
+            </div>
+          </div>
+          <div class="field">
+            <label>Bio</label>
+            <textarea data-bind="hero.bio" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label>Typed roles <span class="tag-help">(comma-separated)</span></label>
+            <input type="text" data-bind="hero.typedItems" data-list="true">
+          </div>
+          <div class="field">
+            <label>CV file path</label>
+            <input type="text" data-bind="hero.cvFile">
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="panel" data-panel="about">
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px;">About text</h3>
+          <div class="field">
+            <label>Heading</label>
+            <input type="text" data-bind="about.heading">
+          </div>
+          <div class="field">
+            <label>Paragraph 1</label>
+            <textarea data-bind="about.paragraphs.0" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label>Paragraph 2</label>
+            <textarea data-bind="about.paragraphs.1" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px;">Info grid</h3>
+          <div class="grid-2">
+            <div class="field"><label>Name</label><input type="text" data-bind="about.info.name"></div>
+            <div class="field"><label>Role</label><input type="text" data-bind="about.info.role"></div>
+            <div class="field"><label>Email</label><input type="text" data-bind="about.info.email"></div>
+            <div class="field"><label>Location</label><input type="text" data-bind="about.info.location"></div>
+            <div class="field"><label>Status</label><input type="text" data-bind="about.info.status"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="panel" data-panel="stats">
+        <div class="card">
+          <div class="grid-2">
+            <div class="field"><label>Years experience</label><input type="number" data-bind="stats.years"></div>
+            <div class="field"><label>Companies</label><input type="number" data-bind="stats.companies"></div>
+            <div class="field"><label>Projects delivered</label><input type="number" data-bind="stats.projects"></div>
+            <div class="field"><label>Certifications</label><input type="number" data-bind="stats.certifications"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills (list) -->
+      <div class="panel" data-panel="skills">
+        <div class="card-header" style="margin-bottom:12px;">
+          <h3 class="card-title">Skill cards</h3>
+          <button class="btn btn-sm" data-add="skills"><i class="bi bi-plus-circle"></i> Add skill</button>
+        </div>
+        <div id="skillsList"></div>
+      </div>
+
+      <!-- Experience (list) -->
+      <div class="panel" data-panel="experience">
+        <div class="card-header" style="margin-bottom:12px;">
+          <h3 class="card-title">Work experience</h3>
+          <button class="btn btn-sm" data-add="experience"><i class="bi bi-plus-circle"></i> Add entry</button>
+        </div>
+        <div id="experienceList"></div>
+      </div>
+
+      <!-- Projects (list) -->
+      <div class="panel" data-panel="projects">
+        <div class="card-header" style="margin-bottom:12px;">
+          <h3 class="card-title">Featured projects</h3>
+          <button class="btn btn-sm" data-add="projects"><i class="bi bi-plus-circle"></i> Add project</button>
+        </div>
+        <div id="projectsList"></div>
+      </div>
+
+      <!-- Testimonials (list) -->
+      <div class="panel" data-panel="testimonials">
+        <div class="card-header" style="margin-bottom:12px;">
+          <h3 class="card-title">Testimonials</h3>
+          <button class="btn btn-sm" data-add="testimonials"><i class="bi bi-plus-circle"></i> Add testimonial</button>
+        </div>
+        <div id="testimonialsList"></div>
+      </div>
+
+      <!-- Education -->
+      <div class="panel" data-panel="education">
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px;">Education</h3>
+          <div class="field"><label>Degree</label><input type="text" data-bind="education.degree"></div>
+          <div class="field"><label>Institution</label><input type="text" data-bind="education.institution"></div>
+          <div class="field"><label>Period</label><input type="text" data-bind="education.period"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Certifications</h3>
+            <button class="btn btn-sm" data-add="certifications"><i class="bi bi-plus-circle"></i> Add cert</button>
+          </div>
+          <div id="certificationsList"></div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="panel" data-panel="contact">
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px;">Contact info</h3>
+          <div class="field">
+            <label>Intro</label>
+            <textarea data-bind="contact.intro" rows="3"></textarea>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Location</label><input type="text" data-bind="contact.location"></div>
+            <div class="field"><label>Email</label><input type="text" data-bind="contact.email"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px;">Social links</h3>
+          <div class="grid-2">
+            <div class="field"><label>LinkedIn</label><input type="url" data-bind="social.linkedin"></div>
+            <div class="field"><label>GitHub</label><input type="url" data-bind="social.github"></div>
+            <div class="field"><label>Facebook</label><input type="url" data-bind="social.facebook"></div>
+            <div class="field"><label>Twitter / X</label><input type="url" data-bind="social.twitter"></div>
+            <div class="field"><label>Instagram</label><input type="url" data-bind="social.instagram"></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom:12px;">Footer</h3>
+          <div class="field"><label>Tagline</label><input type="text" data-bind="footer.tagline"></div>
+          <div class="field"><label>Copyright</label><input type="text" data-bind="footer.copyright"></div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        <strong>How publishing works:</strong> "Save" caches your edits in this browser only. To publish to the live site, click <strong>Download JSON</strong> and replace <code>data/profile.json</code> in your repo, then commit and push. The home page reads from that file.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ─────────────────────────────────────────────────────────────
+       PASSWORD HASH — SHA-256 of "admin123"
+       Replace this with your own hash. See login screen for snippet.
+       ───────────────────────────────────────────────────────────── */
+    const PASSWORD_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+    const SESSION_KEY = 'kk_admin_session';
+    const CACHE_KEY = 'kk_admin_profile_cache';
+
+    /* ──────────────── helpers ──────────────── */
+    async function sha256(str) {
+      const buf = new TextEncoder().encode(str);
+      const h = await crypto.subtle.digest('SHA-256', buf);
+      return [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+    function getPath(obj, path) {
+      return path.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
+    }
+    function setPath(obj, path, val) {
+      const keys = path.split('.');
+      const last = keys.pop();
+      const tgt = keys.reduce((o, k) => (o[k] = o[k] || {}), obj);
+      tgt[last] = val;
+    }
+    function el(tag, attrs = {}, ...children) {
+      const e = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        if (k === 'class') e.className = v;
+        else if (k.startsWith('on') && typeof v === 'function') e.addEventListener(k.slice(2), v);
+        else if (v != null) e.setAttribute(k, v);
+      }
+      for (const c of children) {
+        if (c == null) continue;
+        e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+      }
+      return e;
+    }
+
+    /* ──────────────── auth ──────────────── */
+    const loginWrap = document.getElementById('loginWrap');
+    const editor = document.getElementById('editor');
+
+    function checkSession() {
+      if (sessionStorage.getItem(SESSION_KEY) === '1') {
+        loginWrap.style.display = 'none';
+        editor.classList.add('active');
+        loadProfile();
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pwd = document.getElementById('pwd').value;
+      const errBox = document.getElementById('loginError');
+      const hash = await sha256(pwd);
+      if (hash === PASSWORD_HASH) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        errBox.style.display = 'none';
+        checkSession();
+      } else {
+        errBox.style.display = 'block';
+        document.getElementById('pwd').value = '';
+      }
+    });
+
+    document.getElementById('hashHelpToggle').addEventListener('click', (e) => {
+      e.preventDefault();
+      const h = document.getElementById('hashHelp');
+      h.style.display = h.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      location.reload();
+    });
+
+    /* ──────────────── data ──────────────── */
+    let data = null;
+    let dirty = false;
+    const statusEl = document.getElementById('status');
+    function setDirty(on, msg) {
+      dirty = on;
+      statusEl.textContent = msg || (on ? 'Unsaved changes' : 'Saved');
+      statusEl.classList.toggle('dirty', on);
+    }
+    window.addEventListener('beforeunload', (e) => {
+      if (dirty) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    async function loadProfile(forceFile = false) {
+      try {
+        if (!forceFile) {
+          const cached = localStorage.getItem(CACHE_KEY);
+          if (cached) {
+            data = JSON.parse(cached);
+            renderAll();
+            showAlert('info', 'Loaded from local cache. Click "Reload" to discard cache and re-read profile.json.');
+            return;
+          }
+        }
+        const res = await fetch('data/profile.json?_=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        data = await res.json();
+        renderAll();
+        showAlert('success', 'Loaded from data/profile.json');
+      } catch (err) {
+        showAlert('error', 'Failed to load profile.json: ' + err.message);
+      }
+    }
+
+    function showAlert(type, msg) {
+      const box = document.getElementById('loadAlert');
+      box.innerHTML = '';
+      const a = el('div', { class: 'alert alert-' + type }, msg);
+      box.appendChild(a);
+      setTimeout(() => { a.remove(); }, 4500);
+    }
+
+    /* ──────────────── render ──────────────── */
+    function renderAll() {
+      // simple bound fields
+      document.querySelectorAll('[data-bind]').forEach(input => {
+        const path = input.getAttribute('data-bind');
+        const isList = input.getAttribute('data-list') === 'true';
+        let val = getPath(data, path);
+        if (val == null) val = '';
+        input.value = isList && Array.isArray(val) ? val.join(', ') : val;
+        input.oninput = () => {
+          let v = input.value;
+          if (input.type === 'number') v = Number(v);
+          else if (isList) v = v.split(',').map(s => s.trim()).filter(Boolean);
+          setPath(data, path, v);
+          setDirty(true);
+        };
+      });
+      renderSkills();
+      renderExperience();
+      renderProjects();
+      renderTestimonials();
+      renderCertifications();
+      setDirty(false, 'Loaded');
+    }
+
+    function listItemCard(title, removeFn, ...rows) {
+      return el('details', { open: '' },
+        el('summary', {},
+          el('span', {}, title || '(untitled)'),
+          el('span', {},
+            el('button', { class: 'btn btn-ghost btn-sm', onclick: (e) => { e.preventDefault(); removeFn(); } }, '🗑'),
+          )
+        ),
+        el('div', {}, ...rows)
+      );
+    }
+
+    function fieldRow(label, value, onChange, type = 'text') {
+      const tagName = type === 'textarea' ? 'textarea' : 'input';
+      const input = el(tagName, type === 'textarea' ? { rows: 3 } : { type });
+      input.value = value || '';
+      input.oninput = () => { onChange(input.value); setDirty(true); };
+      return el('div', { class: 'field' },
+        el('label', {}, label),
+        input
+      );
+    }
+
+    function tagsRow(label, tags, onChange) {
+      const input = el('input', { type: 'text' });
+      input.value = (tags || []).join(', ');
+      input.oninput = () => {
+        onChange(input.value.split(',').map(s => s.trim()).filter(Boolean));
+        setDirty(true);
+      };
+      return el('div', { class: 'field' },
+        el('label', {}, label + ' (comma-separated)'),
+        input
+      );
+    }
+
+    function renderSkills() {
+      const list = document.getElementById('skillsList');
+      list.innerHTML = '';
+      data.skills = data.skills || [];
+      data.skills.forEach((s, i) => {
+        list.appendChild(listItemCard(
+          s.title || 'Skill ' + (i + 1),
+          () => { data.skills.splice(i, 1); renderSkills(); setDirty(true); },
+          fieldRow('Title', s.title, v => s.title = v),
+          fieldRow('Icon (Bootstrap class)', s.icon, v => s.icon = v),
+          fieldRow('Description', s.description, v => s.description = v, 'textarea'),
+          tagsRow('Tags', s.tags, v => s.tags = v),
+        ));
+      });
+    }
+
+    function renderExperience() {
+      const list = document.getElementById('experienceList');
+      list.innerHTML = '';
+      data.experience = data.experience || [];
+      data.experience.forEach((e, i) => {
+        list.appendChild(listItemCard(
+          (e.role || '') + ' — ' + (e.company || ''),
+          () => { data.experience.splice(i, 1); renderExperience(); setDirty(true); },
+          fieldRow('Role', e.role, v => e.role = v),
+          fieldRow('Company', e.company, v => e.company = v),
+          fieldRow('Period', e.period, v => e.period = v),
+          fieldRow('Location', e.location, v => e.location = v),
+          fieldRow('Description', e.description, v => e.description = v, 'textarea'),
+          tagsRow('Tags', e.tags, v => e.tags = v),
+          fieldRow('Badge text (optional)', e.badge, v => e.badge = v),
+          (() => {
+            const cb = el('input', { type: 'checkbox' });
+            cb.checked = !!e.current;
+            cb.onchange = () => { e.current = cb.checked; setDirty(true); };
+            return el('div', { class: 'field' },
+              el('label', {}, ' '),
+              el('label', { style: 'display:flex; gap:8px; align-items:center; color: var(--text);' },
+                cb, document.createTextNode(' Mark as current role')
+              )
+            );
+          })()
+        ));
+      });
+    }
+
+    function renderProjects() {
+      const list = document.getElementById('projectsList');
+      list.innerHTML = '';
+      data.projects = data.projects || [];
+      data.projects.forEach((p, i) => {
+        list.appendChild(listItemCard(
+          p.title || 'Project ' + (i + 1),
+          () => { data.projects.splice(i, 1); renderProjects(); setDirty(true); },
+          fieldRow('Title', p.title, v => p.title = v),
+          fieldRow('Icon (Bootstrap class)', p.icon, v => p.icon = v),
+          fieldRow('Description', p.description, v => p.description = v, 'textarea'),
+          tagsRow('Tags', p.tags, v => p.tags = v),
+          fieldRow('Link (optional)', p.link, v => p.link = v),
+          (() => {
+            const cb = el('input', { type: 'checkbox' });
+            cb.checked = !!p.featured;
+            cb.onchange = () => { p.featured = cb.checked; setDirty(true); };
+            return el('div', { class: 'field' },
+              el('label', {}, ' '),
+              el('label', { style: 'display:flex; gap:8px; align-items:center; color: var(--text);' },
+                cb, document.createTextNode(' Featured project')
+              )
+            );
+          })()
+        ));
+      });
+    }
+
+    function renderTestimonials() {
+      const list = document.getElementById('testimonialsList');
+      list.innerHTML = '';
+      data.testimonials = data.testimonials || [];
+      data.testimonials.forEach((t, i) => {
+        list.appendChild(listItemCard(
+          t.author || 'Testimonial ' + (i + 1),
+          () => { data.testimonials.splice(i, 1); renderTestimonials(); setDirty(true); },
+          fieldRow('Quote', t.text, v => t.text = v, 'textarea'),
+          fieldRow('Author', t.author, v => t.author = v),
+          fieldRow('Author role', t.role, v => t.role = v),
+          fieldRow('Avatar path', t.avatar, v => t.avatar = v),
+        ));
+      });
+    }
+
+    function renderCertifications() {
+      const list = document.getElementById('certificationsList');
+      list.innerHTML = '';
+      data.certifications = data.certifications || [];
+      data.certifications.forEach((c, i) => {
+        list.appendChild(listItemCard(
+          c.title || 'Cert ' + (i + 1),
+          () => { data.certifications.splice(i, 1); renderCertifications(); setDirty(true); },
+          fieldRow('Title', c.title, v => c.title = v),
+          fieldRow('Issuer', c.issuer, v => c.issuer = v),
+        ));
+      });
+    }
+
+    /* ──────────────── add buttons ──────────────── */
+    const ADD_TEMPLATES = {
+      skills: { icon: 'bi-star', title: 'New skill', description: '', tags: [] },
+      experience: { role: 'New role', company: '', period: '', location: '', description: '', tags: [], current: false, badge: '' },
+      projects: { icon: 'bi-box', title: 'New project', description: '', tags: [], link: '', featured: false },
+      testimonials: { text: '', author: 'New person', role: '', avatar: '' },
+      certifications: { title: 'New certification', issuer: '' }
+    };
+    const RENDERERS = {
+      skills: renderSkills,
+      experience: renderExperience,
+      projects: renderProjects,
+      testimonials: renderTestimonials,
+      certifications: renderCertifications
+    };
+    document.querySelectorAll('[data-add]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-add');
+        data[key] = data[key] || [];
+        data[key].push(JSON.parse(JSON.stringify(ADD_TEMPLATES[key])));
+        RENDERERS[key]();
+        setDirty(true);
+      });
+    });
+
+    /* ──────────────── tabs ──────────────── */
+    document.querySelectorAll('.tab').forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.querySelector('.panel[data-panel="' + t.getAttribute('data-tab') + '"]').classList.add('active');
+      });
+    });
+
+    /* ──────────────── actions ──────────────── */
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      setDirty(false, 'Saved to local cache');
+      showAlert('success', 'Saved to browser cache. Click "Download JSON" to publish.');
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'profile.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showAlert('info', 'Downloaded. Replace data/profile.json in the repo, then commit & push to publish.');
+    });
+
+    document.getElementById('reloadBtn').addEventListener('click', () => {
+      if (dirty && !confirm('Discard unsaved changes and reload from profile.json?')) return;
+      localStorage.removeItem(CACHE_KEY);
+      loadProfile(true);
+    });
+
+    /* ──────────────── go ──────────────── */
+    checkSession();
+  </script>
+</body>
+</html>

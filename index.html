@@ -205,43 +205,43 @@
           </div>
           <div class="col-lg-8 reveal-right">
             <div class="about-text">
-              <h3>Principal Software Engineer based in Dhaka, Bangladesh</h3>
-              <p>I am Md. Khairul Kabir, a seasoned Software Engineer with over 9 years of experience building scalable, high-performance software solutions across diverse domains. I specialize in modern web architecture — particularly micro-frontend (MFE) design using React and Backend-for-Frontend (BFF) and microservices development with .NET.</p>
-              <p>Over the years I have evolved into a technical leader, guiding both frontend and backend teams, designing system architectures, and ensuring the delivery of robust, maintainable, and secure applications. I am well-versed in Agile/Scrum practices and have a strong focus on DevOps, implementing CI/CD pipelines to enable faster, reliable releases.</p>
+              <h3 data-bind-text="about.heading">Principal Software Engineer based in Dhaka, Bangladesh</h3>
+              <p data-bind-text="about.paragraph">I am Md. Khairul Kabir, a seasoned Software Engineer with over 9 years of experience building scalable, high-performance software solutions across diverse domains. I specialize in modern web architecture — particularly micro-frontend (MFE) design using React and Backend-for-Frontend (BFF) and microservices development with .NET.</p>
+              <p data-bind-text="about.paragraph">Over the years I have evolved into a technical leader, guiding both frontend and backend teams, designing system architectures, and ensuring the delivery of robust, maintainable, and secure applications. I am well-versed in Agile/Scrum practices and have a strong focus on DevOps, implementing CI/CD pipelines to enable faster, reliable releases.</p>
               <div class="about-info-grid">
                 <div class="about-info-item">
                   <i class="bi bi-person-circle"></i>
                   <div>
                     <span class="info-label">Name</span>
-                    <span class="info-value">Md. Khairul Kabir</span>
+                    <span class="info-value" data-bind-text="about.info.name">Md. Khairul Kabir</span>
                   </div>
                 </div>
                 <div class="about-info-item">
                   <i class="bi bi-briefcase"></i>
                   <div>
                     <span class="info-label">Role</span>
-                    <span class="info-value">Principal Software Engineer</span>
+                    <span class="info-value" data-bind-text="about.info.role">Principal Software Engineer</span>
                   </div>
                 </div>
                 <div class="about-info-item">
                   <i class="bi bi-envelope"></i>
                   <div>
                     <span class="info-label">Email</span>
-                    <span class="info-value">kkabirmdkhairul@gmail.com</span>
+                    <span class="info-value" data-bind-text="about.info.email">kkabirmdkhairul@gmail.com</span>
                   </div>
                 </div>
                 <div class="about-info-item">
                   <i class="bi bi-geo-alt"></i>
                   <div>
                     <span class="info-label">Location</span>
-                    <span class="info-value">Dhaka, Bangladesh</span>
+                    <span class="info-value" data-bind-text="about.info.location">Dhaka, Bangladesh</span>
                   </div>
                 </div>
                 <div class="about-info-item">
                   <i class="bi bi-check-circle"></i>
                   <div>
                     <span class="info-label">Status</span>
-                    <span class="info-value status-open">Open to Opportunities</span>
+                    <span class="info-value status-open" data-bind-text="about.info.status">Open to Opportunities</span>
                   </div>
                 </div>
               </div>
@@ -259,7 +259,7 @@
           <h2 class="section-title">Skills & Expertise</h2>
           <p class="section-subtitle">Technologies and practices I use to build great software</p>
         </div>
-        <div class="row g-4">
+        <div class="row g-4" data-render="skills">
           <div class="col-md-6 col-lg-4 reveal-up" style="--delay: 0ms">
             <div class="skill-card">
               <div class="skill-card-icon">
@@ -377,7 +377,7 @@
           <h2 class="section-title">Work Experience</h2>
           <p class="section-subtitle">9+ years building enterprise software across banking, healthcare, and marketing technology</p>
         </div>
-        <div class="timeline">
+        <div class="timeline" data-render="experience">
 
           <div class="timeline-item reveal-up">
             <div class="tl-dot tl-dot-active"></div>
@@ -543,7 +543,7 @@
           <h2 class="section-title">Featured Projects</h2>
           <p class="section-subtitle">Personal projects showcasing my skills beyond the day job</p>
         </div>
-        <div class="row g-4">
+        <div class="row g-4" data-render="projects">
           <div class="col-lg-6 reveal-up">
             <div class="project-card project-card-featured">
               <div class="project-card-header">
@@ -614,7 +614,7 @@
           <p class="section-subtitle">Recommendations from teammates and managers I've worked with</p>
         </div>
         <div class="testimonials-slider swiper reveal-up">
-          <div class="swiper-wrapper">
+          <div class="swiper-wrapper" data-render="testimonials">
 
             <div class="swiper-slide">
               <div class="testimonial-card">
@@ -705,14 +705,14 @@
             <div class="edu-card">
               <div class="edu-icon"><i class="bi bi-mortarboard-fill"></i></div>
               <div class="edu-content">
-                <h3>B.Sc. in Computer Science & Engineering</h3>
-                <span class="edu-institution">American International University-Bangladesh (AIUB)</span>
-                <span class="edu-period"><i class="bi bi-calendar3"></i> 2013 — 2017</span>
+                <h3 data-bind-text="education.degree">B.Sc. in Computer Science & Engineering</h3>
+                <span class="edu-institution" data-bind-text="education.institution">American International University-Bangladesh (AIUB)</span>
+                <span class="edu-period" data-bind-text="education.period"><i class="bi bi-calendar3"></i> 2013 — 2017</span>
               </div>
             </div>
           </div>
           <div class="col-lg-7 reveal-right">
-            <div class="cert-grid">
+            <div class="cert-grid" data-render="certifications">
               <div class="cert-item">
                 <div class="cert-icon"><i class="bi bi-patch-check-fill"></i></div>
                 <div>
@@ -758,20 +758,20 @@
         <div class="row g-5">
           <div class="col-lg-5 reveal-left">
             <div class="contact-info-panel">
-              <p class="contact-intro">Whether you have an opportunity, a project to discuss, or just want to connect — I'm always open to new conversations and collaborations.</p>
+              <p class="contact-intro" data-bind-text="contact.intro">Whether you have an opportunity, a project to discuss, or just want to connect — I'm always open to new conversations and collaborations.</p>
               <div class="contact-details">
                 <div class="contact-detail-item">
                   <div class="cd-icon"><i class="bi bi-geo-alt-fill"></i></div>
                   <div class="cd-text">
                     <span>Location</span>
-                    <strong>Dhaka, Bangladesh</strong>
+                    <strong data-bind-text="contact.location">Dhaka, Bangladesh</strong>
                   </div>
                 </div>
                 <div class="contact-detail-item">
                   <div class="cd-icon"><i class="bi bi-envelope-fill"></i></div>
                   <div class="cd-text">
                     <span>Email</span>
-                    <strong><a href="mailto:kkabirmdkhairul@gmail.com">kkabirmdkhairul@gmail.com</a></strong>
+                    <strong data-bind-text="contact.email"><a href="mailto:kkabirmdkhairul@gmail.com">kkabirmdkhairul@gmail.com</a></strong>
                   </div>
                 </div>
               </div>
@@ -825,10 +825,10 @@
       <div class="footer-inner">
         <div class="footer-left">
           <span class="footer-logo">KK</span>
-          <p>Senior Software Engineer · Dhaka, Bangladesh</p>
+          <p data-bind-text="footer.tagline">Senior Software Engineer · Dhaka, Bangladesh</p>
         </div>
         <div class="footer-center">
-          <p>&copy; 2025 Md. Khairul Kabir. All rights reserved.</p>
+          <p data-bind-text="footer.copyright">&copy; 2025 Md. Khairul Kabir. All rights reserved.</p>
         </div>
         <div class="footer-right">
           <div class="footer-social">
@@ -851,7 +851,7 @@
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="assets/vendor/typed.js/typed.umd.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/profile-loader.js"></script>
 
 </body>
 </html>

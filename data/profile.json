@@ -1,0 +1,219 @@
+{
+  "hero": {
+    "greeting": "Hello, I'm",
+    "name": "Md. Khairul Kabir",
+    "typedItems": [
+      "Principal Software Engineer",
+      "Micro-Frontend Architect",
+      ".NET & React Expert",
+      "Technical Leader"
+    ],
+    "bio": "Principal Software Engineer with 9+ years of expertise in .NET, React, and micro-frontend architecture — building scalable, high-performance systems across banking, healthcare, and enterprise domains.",
+    "cvFile": "assets/cv/Khairul_Kabir_CV.pdf"
+  },
+  "stats": {
+    "years": 9,
+    "companies": 6,
+    "projects": 30,
+    "certifications": 4
+  },
+  "about": {
+    "heading": "Principal Software Engineer based in Dhaka, Bangladesh",
+    "paragraphs": [
+      "I am Md. Khairul Kabir, a seasoned Software Engineer with over 9 years of experience building scalable, high-performance software solutions across diverse domains. I specialize in modern web architecture — particularly micro-frontend (MFE) design using React and Backend-for-Frontend (BFF) and microservices development with .NET.",
+      "Over the years I have evolved into a technical leader, guiding both frontend and backend teams, designing system architectures, and ensuring the delivery of robust, maintainable, and secure applications. I am well-versed in Agile/Scrum practices and have a strong focus on DevOps, implementing CI/CD pipelines to enable faster, reliable releases."
+    ],
+    "info": {
+      "name": "Md. Khairul Kabir",
+      "role": "Principal Software Engineer",
+      "email": "kkabirmdkhairul@gmail.com",
+      "location": "Dhaka, Bangladesh",
+      "status": "Open to Opportunities"
+    }
+  },
+  "skills": [
+    {
+      "icon": "bi-code-square",
+      "title": "Backend Development",
+      "description": "Building robust APIs, microservices, and BFF layers with enterprise-grade .NET architecture.",
+      "tags": [".NET", ".NET Core", "C#", "REST API", "Microservices", "BFF Pattern", "ASP.NET MVC", "WSO2"]
+    },
+    {
+      "icon": "bi-window-stack",
+      "title": "Frontend Development",
+      "description": "Crafting scalable micro-frontend (MFE) architectures and responsive UIs with modern frameworks.",
+      "tags": ["React.js", "Angular", "Micro-Frontend", "TypeScript", "Node.js", "VueJS", "AngularJS"]
+    },
+    {
+      "icon": "bi-database",
+      "title": "Database & Data",
+      "description": "Expert in database design, optimization, and management across SQL and cloud platforms.",
+      "tags": ["SQL Server", "T-SQL", "Oracle", "PostgreSQL", "Azure SQL", "Query Optimization"]
+    },
+    {
+      "icon": "bi-cloud-upload",
+      "title": "DevOps & Cloud",
+      "description": "Implementing CI/CD pipelines and containerised deployments for faster, reliable releases.",
+      "tags": ["Docker", "CI/CD", "Azure DevOps", "Azure", "Git", "nUnit"]
+    },
+    {
+      "icon": "bi-diagram-3",
+      "title": "Architecture & Design",
+      "description": "Designing systems that scale with proven patterns, clean code, and security in mind.",
+      "tags": ["Clean Architecture", "SOLID", "Design Patterns", "DDD", "Repository Pattern", "MVC"]
+    },
+    {
+      "icon": "bi-people",
+      "title": "Leadership & Agile",
+      "description": "Technical leader driving sprint planning, delivery management, mentoring, and code quality.",
+      "tags": ["Team Leadership", "Scrum", "Sprint Planning", "Mentoring", "Code Review", "Stakeholder Management"]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Associate Manager",
+      "company": "BRAC Bank PLC",
+      "period": "Jan 2026 — Present",
+      "location": "Dhaka, Bangladesh",
+      "description": "Leading the One App platform that unifies the bank's digital channels — accelerating feature delivery, lifting customer engagement, and turning fragmented experiences into one trusted product the business can grow on.",
+      "tags": ["React", "Micro-Frontend", ".NET BFF", "CI/CD", "System Architecture", "Agile"],
+      "current": true,
+      "badge": "Current"
+    },
+    {
+      "role": "Senior Software Engineer",
+      "company": "BRAC IT Services Limited",
+      "period": "Feb 2024 — Dec 2025",
+      "location": "Dhaka, Bangladesh",
+      "description": "Modernised internal applications powering day-to-day banking operations — cutting manual workload, sharpening reporting cycles, and giving decision-makers cleaner data to act on faster.",
+      "tags": [".NET Core", "MVC", "Oracle", "MSSQL", "jQuery", "Reporting"],
+      "current": false,
+      "badge": ""
+    },
+    {
+      "role": "Software Engineer Level II",
+      "company": "Wunderman Thompson Studios Dhaka",
+      "period": "Sept 2022 — Jan 2024",
+      "location": "Dhaka, Bangladesh",
+      "description": "Delivered marketing and management platforms for global brands — helping campaigns launch faster, scale across markets, and convert at higher rates through better digital tooling.",
+      "tags": ["ASP.NET", ".NET Core", "Angular", "Node.js", "PostgreSQL", "nUnit"],
+      "current": false,
+      "badge": ""
+    },
+    {
+      "role": "Senior Officer (IT)",
+      "company": "BRAC Bank Limited",
+      "period": "Sept 2021 — Aug 2022",
+      "location": "Dhaka, Bangladesh",
+      "description": "Shipped customer-facing banking products — debit cards, bill pay, loan tracking, FDRs, and a stock trading platform — that opened new revenue streams and removed friction from everyday banking journeys.",
+      "tags": ["ASP.NET MVC", ".NET Core", "SQL Server", "AngularJS", "REST API", "Trading Platform"],
+      "current": false,
+      "badge": ""
+    },
+    {
+      "role": "Software Engineer → Senior Software Engineer",
+      "company": "Niramoy Healthtech Limited",
+      "period": "Aug 2018 — Sept 2021",
+      "location": "Dhaka, Bangladesh",
+      "description": "Built the EHR SaaS that brought clinics across Bangladesh online — improving patient outcomes, unlocking recurring subscription revenue, and laying the digital foundation for the company's growth.",
+      "tags": ["ASP.NET Core", "VueJS", "AngularJS", "Azure SQL", "SaaS", "Healthcare"],
+      "current": false,
+      "badge": "3 yrs 2 mos"
+    },
+    {
+      "role": "Software Engineer (Intern → Full-time)",
+      "company": "LEADS Corporation Limited",
+      "period": "Jun 2017 — Oct 2018",
+      "location": "Dhaka, Bangladesh",
+      "description": "Helped deliver BankUltimus, a mobile banking product that expanded customer reach for partner banks and modernised their digital channels in a fast-changing market.",
+      "tags": ["ASP.NET MVC", "C#", "AngularJS", "Oracle", "Repository Pattern", "Mobile Banking"],
+      "current": false,
+      "badge": ""
+    }
+  ],
+  "projects": [
+    {
+      "icon": "bi-moon-stars-fill",
+      "title": "Islamic Prayer Times App",
+      "description": "A comprehensive prayer times web application for Bangladesh. Features real-time GPS geolocation, support for all 64 districts, countdown timer to next prayer, Jummah time display, Hijri calendar with Bangladesh adjustment, and live weather integration.",
+      "tags": ["JavaScript", "Aladhan API", "Geolocation", "Open-Meteo", "CSS3"],
+      "link": "islamic.html",
+      "featured": true
+    },
+    {
+      "icon": "bi-hospital",
+      "title": "Healthcare Management System",
+      "description": "A comprehensive electronic health record and hospital management platform built during 3 years at Niramoy. Covered patient registration, appointment scheduling, prescription management, billing, and lab reports — serving multiple clinics across Bangladesh.",
+      "tags": [".NET", "Angular", "SQL Server", "REST API", "C#"],
+      "link": "",
+      "featured": false
+    },
+    {
+      "icon": "bi-graph-up-arrow",
+      "title": "MarTech Enterprise Platform",
+      "description": "Developed and maintained enterprise marketing technology solutions at Wunderman Thompson for global clients. Implemented backend APIs and Angular frontends supporting large-scale campaign management, analytics dashboards, and content delivery pipelines.",
+      "tags": [".NET Core", "Angular", "TypeScript", "REST API", "Azure"],
+      "link": "",
+      "featured": false
+    }
+  ],
+  "testimonials": [
+    {
+      "text": "Khairul's diligence and commitment to excellence are exemplary. His in-depth knowledge of .NET and Frontend technologies played a pivotal role in our team's success, demonstrating both versatility and expertise. His strong sense of task ownership, coupled with a proactive approach, made him a reliable go-to person. Khairul Kabir is an asset to any software engineering team.",
+      "author": "Raqif Bassam",
+      "role": "Team Lead",
+      "avatar": "assets/img/bassam.jpg"
+    },
+    {
+      "text": "I had the pleasure of working with Khairul as their team lead and product owner. Khairul is an outstanding developer — sincere, committed and structured. His hardworking and collaborative nature makes him an exceptional team player. If our paths ever crossed I'd love to work with him again.",
+      "author": "Nazia Hasin",
+      "role": "Team Lead & Product Owner",
+      "avatar": "assets/img/nazia.jpg"
+    },
+    {
+      "text": "Khairul Kabir was very energetic & full of great ideas. He is definitely hard working, focused and dedicated. His drive and sincerity towards product development is undeniable. Khairul can deliver in the shortest time constraint while keeping decent code quality. It was an absolute honor to work with him.",
+      "author": "Khaled Md Tuhidul Hossain",
+      "role": "Software Engineer",
+      "avatar": "assets/img/link-1.jpg"
+    },
+    {
+      "text": "Khairul is an impeccable team player who embraces challenges and never misses an opportunity to exceed expectations. His positive attitude towards work is contagious and lifts the whole team up. He is a gem of a developer who possesses systems thinking, making him a fine addition to any development team.",
+      "author": "Nasrul Karim Sarker, PMP",
+      "role": "Project Manager",
+      "avatar": "assets/img/link-2.jpg"
+    },
+    {
+      "text": "Khairul Kabir has extensive knowledge in software engineering — he is the person you go to when you need help. He distinguished himself by consistently developing exceptionally well-engineered software modules. A very dedicated and detail-oriented individual, he thrives on the passion he has for software engineering and solution development.",
+      "author": "Sadequzzaman Monoj",
+      "role": "Senior Engineer",
+      "avatar": "assets/img/monoj.jpg"
+    }
+  ],
+  "education": {
+    "degree": "B.Sc. in Computer Science & Engineering",
+    "institution": "American International University-Bangladesh (AIUB)",
+    "period": "2013 — 2017"
+  },
+  "certifications": [
+    { "title": "ASP.NET Core: Middleware", "issuer": "LinkedIn Learning" },
+    { "title": "Using Docker and .NET Core", "issuer": "LinkedIn Learning" },
+    { "title": "Level Up: Advanced SQL", "issuer": "LinkedIn Learning" },
+    { "title": "Microservices Foundations", "issuer": "LinkedIn Learning" }
+  ],
+  "contact": {
+    "intro": "Whether you have an opportunity, a project to discuss, or just want to connect — I'm always open to new conversations and collaborations.",
+    "location": "Dhaka, Bangladesh",
+    "email": "kkabirmdkhairul@gmail.com"
+  },
+  "social": {
+    "linkedin": "https://www.linkedin.com/in/md-khairul-kabir-b05353b1/",
+    "github": "https://github.com/Khairul-Kabir",
+    "facebook": "https://www.facebook.com/k.kabir76",
+    "twitter": "https://twitter.com/ShakilKabir1",
+    "instagram": "https://www.instagram.com/kabir_khairul_/?hl=en"
+  },
+  "footer": {
+    "tagline": "Senior Software Engineer · Dhaka, Bangladesh",
+    "copyright": "© 2025 Md. Khairul Kabir. All rights reserved."
+  }
+}
