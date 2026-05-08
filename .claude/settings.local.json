@@ -5,7 +5,9 @@
       "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application/**)",
       "Read(//c/Program Files/Google/Chrome/Application/**)",
       "Bash(\"/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\" --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf=\"D:\\\\Projects\\\\profile.kabir.io\\\\assets\\\\cv\\\\Khairul_Kabir_CV.pdf\" \"file:///D:/Projects/profile.kabir.io/assets/cv/cv-source.html\")",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(openssl dgst *)",
+      "Bash(awk '{print $NF}')"
     ]
   }
 }

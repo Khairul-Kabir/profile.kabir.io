@@ -250,19 +250,6 @@
       <button type="submit" class="btn" style="width:100%; justify-content:center;">
         <i class="bi bi-unlock"></i> Sign in
       </button>
-      <p class="help" style="margin-top:16px;">
-        Default password: <code>admin123</code> — change it by replacing <code>PASSWORD_HASH</code> in this file.
-        Generate a new hash with <a href="#" id="hashHelpToggle">this snippet</a>.
-      </p>
-      <div id="hashHelp" style="display:none; margin-top:12px; font-size:12px; color: var(--text-dim);">
-        Open the browser console on this page and run:
-        <pre style="background: var(--surface-2); padding: 10px; border-radius: 6px; overflow-x:auto; margin-top: 6px;"><code>(async p =&gt; {
-  const b = new TextEncoder().encode(p);
-  const h = await crypto.subtle.digest('SHA-256', b);
-  console.log([...new Uint8Array(h)].map(x=&gt;x.toString(16).padStart(2,'0')).join(''));
-})('YOUR_NEW_PASSWORD');</code></pre>
-        Copy the printed hash and replace the value of <code>PASSWORD_HASH</code> at the top of the script in this file.
-      </div>
     </form>
   </div>
 
@@ -273,7 +260,9 @@
       <span class="topbar-status" id="status">Loaded</span>
       <button class="btn btn-ghost btn-sm" id="reloadBtn" title="Reload from profile.json (discards local changes)"><i class="bi bi-arrow-clockwise"></i> Reload</button>
       <button class="btn btn-sm" id="saveBtn"><i class="bi bi-save"></i> Save (cache)</button>
-      <button class="btn btn-sm" id="downloadBtn"><i class="bi bi-download"></i> Download JSON</button>
+      <button class="btn btn-sm" id="publishBtn" style="background:#2ecc71;"><i class="bi bi-cloud-upload"></i> Publish to GitHub</button>
+      <button class="btn btn-ghost btn-sm" id="downloadBtn" title="Download JSON file"><i class="bi bi-download"></i></button>
+      <button class="btn btn-ghost btn-sm" id="forgetTokenBtn" title="Forget GitHub token"><i class="bi bi-key"></i></button>
       <button class="btn btn-ghost btn-sm" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Logout</button>
     </div>
 
@@ -445,19 +434,30 @@
       </div>
 
       <div class="footer-note">
-        <strong>How publishing works:</strong> "Save" caches your edits in this browser only. To publish to the live site, click <strong>Download JSON</strong> and replace <code>data/profile.json</code> in your repo, then commit and push. The home page reads from that file.
+        <strong>How publishing works:</strong>
+        <ul style="margin: 8px 0 0; padding-left: 20px;">
+          <li><strong>Save</strong> — caches edits in this browser only.</li>
+          <li><strong>Publish to GitHub</strong> — commits <code>data/profile.json</code> directly to <code>Khairul-Kabir/profile.kabir.io@main</code> via the GitHub API. GitHub Pages redeploys in ~30s.</li>
+          <li><strong>Download</strong> — downloads the JSON file (manual fallback).</li>
+        </ul>
+        On first publish you'll be asked for a fine-grained Personal Access Token (Contents: Read/Write on this repo). The token is stored in your browser's localStorage. Use the key icon in the topbar to forget it.
       </div>
     </div>
   </div>
 
   <script>
     /* ─────────────────────────────────────────────────────────────
-       PASSWORD HASH — SHA-256 of "admin123"
-       Replace this with your own hash. See login screen for snippet.
+       Config
        ───────────────────────────────────────────────────────────── */
-    const PASSWORD_HASH = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+    const PASSWORD_HASH = '272d5740e0aa1239cc680e6050cadda2198212dd584046e88fe71bc8fc4d08a5';
     const SESSION_KEY = 'kk_admin_session';
     const CACHE_KEY = 'kk_admin_profile_cache';
+    const TOKEN_KEY = 'kk_admin_gh_token';
+
+    const GH_OWNER  = 'Khairul-Kabir';
+    const GH_REPO   = 'profile.kabir.io';
+    const GH_BRANCH = 'main';
+    const GH_PATH   = 'data/profile.json';
 
     /* ──────────────── helpers ──────────────── */
     async function sha256(str) {
@@ -515,12 +515,6 @@
       }
     });
 
-    document.getElementById('hashHelpToggle').addEventListener('click', (e) => {
-      e.preventDefault();
-      const h = document.getElementById('hashHelp');
-      h.style.display = h.style.display === 'none' ? 'block' : 'none';
-    });
-
     document.getElementById('logoutBtn').addEventListener('click', () => {
       sessionStorage.removeItem(SESSION_KEY);
       location.reload();
@@ -563,9 +557,11 @@
     function showAlert(type, msg) {
       const box = document.getElementById('loadAlert');
       box.innerHTML = '';
-      const a = el('div', { class: 'alert alert-' + type }, msg);
+      const a = document.createElement('div');
+      a.className = 'alert alert-' + type;
+      a.innerHTML = msg;
       box.appendChild(a);
-      setTimeout(() => { a.remove(); }, 4500);
+      setTimeout(() => { a.remove(); }, 6000);
     }
 
     /* ──────────────── render ──────────────── */
@@ -791,6 +787,116 @@
       if (dirty && !confirm('Discard unsaved changes and reload from profile.json?')) return;
       localStorage.removeItem(CACHE_KEY);
       loadProfile(true);
+    });
+
+    /* ──────────────── GitHub publish ──────────────── */
+    function getToken() {
+      let t = localStorage.getItem(TOKEN_KEY);
+      if (!t) {
+        t = prompt(
+          'Paste a GitHub fine-grained Personal Access Token.\n\n' +
+          'Required permissions on ' + GH_OWNER + '/' + GH_REPO + ':\n' +
+          '  • Contents: Read and write\n' +
+          '  • Metadata: Read\n\n' +
+          'Generate at: github.com/settings/personal-access-tokens'
+        );
+        if (!t) return null;
+        t = t.trim();
+        localStorage.setItem(TOKEN_KEY, t);
+      }
+      return t;
+    }
+
+    function utf8ToBase64(str) {
+      // handles unicode safely
+      const bytes = new TextEncoder().encode(str);
+      let bin = '';
+      for (const b of bytes) bin += String.fromCharCode(b);
+      return btoa(bin);
+    }
+
+    async function ghFetch(path, opts = {}) {
+      const token = getToken();
+      if (!token) throw new Error('No GitHub token provided.');
+      const res = await fetch('https://api.github.com' + path, {
+        ...opts,
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          ...(opts.headers || {})
+        }
+      });
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem(TOKEN_KEY);
+        throw new Error('Token rejected (' + res.status + '). Cleared from storage — try again.');
+      }
+      return res;
+    }
+
+    async function publishToGithub() {
+      const btn = document.getElementById('publishBtn');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Publishing...';
+      try {
+        // 1. Get current file SHA
+        const contentsPath = `/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}?ref=${GH_BRANCH}`;
+        const cur = await ghFetch(contentsPath);
+        let sha = null;
+        if (cur.ok) {
+          const j = await cur.json();
+          sha = j.sha;
+        } else if (cur.status !== 404) {
+          throw new Error('Could not read current file: HTTP ' + cur.status);
+        }
+
+        // 2. PUT new content
+        const json = JSON.stringify(data, null, 2) + '\n';
+        const body = {
+          message: 'Update profile.json via admin editor',
+          content: utf8ToBase64(json),
+          branch: GH_BRANCH
+        };
+        if (sha) body.sha = sha;
+
+        const put = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (!put.ok) {
+          const err = await put.json().catch(() => ({}));
+          throw new Error(err.message || 'Publish failed: HTTP ' + put.status);
+        }
+        const result = await put.json();
+        const commitUrl = result.commit && result.commit.html_url;
+        // also keep local cache in sync
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        setDirty(false, 'Published');
+        showAlert('success',
+          'Published to GitHub. Pages will redeploy in ~30s.' +
+          (commitUrl ? ' <a href="' + commitUrl + '" target="_blank">View commit</a>' : '')
+        );
+      } catch (err) {
+        showAlert('error', 'Publish failed: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    }
+
+    document.getElementById('publishBtn').addEventListener('click', publishToGithub);
+
+    document.getElementById('forgetTokenBtn').addEventListener('click', () => {
+      if (!localStorage.getItem(TOKEN_KEY)) {
+        showAlert('info', 'No token stored.');
+        return;
+      }
+      if (confirm('Forget the stored GitHub token? You will be asked again next publish.')) {
+        localStorage.removeItem(TOKEN_KEY);
+        showAlert('info', 'Token forgotten.');
+      }
     });
 
     /* ──────────────── go ──────────────── */
