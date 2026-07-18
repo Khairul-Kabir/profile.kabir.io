@@ -4,11 +4,10 @@
     "name": "Md. Khairul Kabir",
     "typedItems": [
       "Principal Software Engineer",
-      "Micro-Frontend Architect",
       ".NET & React Expert",
       "Technical Leader"
     ],
-    "bio": "Principal Software Engineer with 9+ years of expertise in .NET, React, and micro-frontend architecture — building scalable, high-performance systems across banking, healthcare, and enterprise domains.",
+    "bio": "Principal Software Engineer with 9+ years of expertise in .NET, React — building scalable, high-performance systems across banking, healthcare, and enterprise domains.",
     "cvFile": "assets/cv/Khairul_Kabir_CV.pdf"
   },
   "stats": {
@@ -125,7 +124,7 @@
       "company": "LEADS Corporation Limited",
       "period": "Jun 2017 — Oct 2018",
       "location": "Dhaka, Bangladesh",
-      "description": "Helped deliver BankUltimus, a mobile banking product that expanded customer reach for partner banks and modernised their digital channels in a fast-changing market.",
+      "description": "Helped deliver LEADS MFS, a mobile banking product that expanded customer reach for partner banks and modernised their digital channels in a fast-changing market.",
       "tags": ["ASP.NET MVC", "C#", "AngularJS", "Oracle", "Repository Pattern", "Mobile Banking"],
       "current": false,
       "badge": ""
