@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nightshelf — Story Reader</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link href="lib/bootstrap.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="ns-navbar">
+  <div class="container d-flex align-items-center justify-content-between">
+    <div class="ns-brand"><img src="assets/logo.png" alt="Nightshelf logo"> Nightshelf</div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="ns-tagline d-none d-md-block me-2">Stories for after dark</span>
+      <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme">&#9788;</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="ns-hero">
+    <h1>Pick a story off the shelf</h1>
+    <p>Every book here is told in episodes. Read one, or read through the night.</p>
+    <div class="ns-search-wrap">
+      <span class="icon">&#128269;</span>
+      <input id="searchInput" type="text" placeholder="Search stories or genres&hellip;" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- Continue Reading (shown only if localStorage has a bookmark) -->
+  <div id="continueCard" class="ns-continue">
+    <img id="continueCover" src="" alt="">
+    <div class="meta">
+      <div class="label">Continue reading</div>
+      <div class="title" id="continueTitle"></div>
+      <div class="sub" id="continueSub"></div>
+    </div>
+    <div class="go">&rarr;</div>
+  </div>
+
+  <div class="ns-shelf-label">On the shelf</div>
+  <div id="storyGrid" class="ns-book-grid">
+    <div class="ns-loading"><div class="spinner"></div>Lighting the lamp&hellip;</div>
+  </div>
+  <div id="noResults" class="ns-no-results">No stories match your search.</div>
+</main>
+
+<footer class="ns-footer">Nightshelf &middot; a small book-reader app &middot; built with Bootstrap, jQuery &amp; JSON</footer>
+
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.bundle.min.js"></script>
+<script src="storyapp.js"></script>
+</body>
+</html>

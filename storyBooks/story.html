@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nightshelf — Reading</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link href="lib/bootstrap.min.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="progressBar" class="ns-progress-bar d-none">
+  <div id="progressBarFill" class="ns-progress-bar-fill"></div>
+</div>
+
+<nav class="ns-navbar">
+  <div class="container d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-3">
+      <button id="backBtn" class="ns-back-btn">&larr; Back</button>
+      <div class="ns-brand"><img src="assets/logo.png" alt="Nightshelf logo"> Nightshelf</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div id="fontControls" class="ns-font-controls d-none">
+        <button data-size="sm" title="Smaller text">A&minus;</button>
+        <button data-size="md" title="Default text" class="active">A</button>
+        <button data-size="lg" title="Larger text">A&plus;</button>
+      </div>
+      <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme">&#9788;</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+
+  <!-- ============ Episode list (table of contents) ============ -->
+  <section id="view-story" class="ns-view">
+    <div class="ns-story-header">
+      <div class="cover-wrap"><img id="storyCover" src="" alt=""></div>
+      <div class="info">
+        <span id="storyGenre" class="genre-tag"></span>
+        <h2 id="storyTitle"></h2>
+        <div id="storyAuthor" class="author"></div>
+        <p id="storyDesc" class="desc"></p>
+      </div>
+    </div>
+
+    <div class="ns-shelf-label">Episodes</div>
+    <div id="episodeGrid" class="ns-episode-list">
+      <div class="ns-loading"><div class="spinner"></div>Opening the book&hellip;</div>
+    </div>
+  </section>
+
+  <!-- ============ Reader (the open page) ============ -->
+  <section id="view-reader" class="ns-view">
+    <div class="ns-reader-wrap">
+      <div class="ns-reader-topbar">
+        <div class="crumb">Reading <strong id="readerStoryTitle"></strong></div>
+        <div id="progressDots" class="ns-progress-dots"></div>
+      </div>
+
+      <article class="ns-page">
+        <img id="readerCover" class="ep-cover" src="" alt="">
+        <div class="kicker" id="readerKicker"></div>
+        <h3 id="readerTitle"></h3>
+        <div id="readerText" class="story-text"></div>
+      </article>
+
+      <div class="ns-reader-nav">
+        <button id="prevBtn" class="ns-nav-btn"><span>&larr;</span><span class="label"></span></button>
+        <button id="tocBtn" class="ns-nav-btn">Contents</button>
+        <button id="nextBtn" class="ns-nav-btn"><span class="label"></span><span>&rarr;</span></button>
+      </div>
+    </div>
+  </section>
+
+  <div id="storyErrorHost"></div>
+</main>
+
+<footer class="ns-footer">Nightshelf &middot; a small book-reader app &middot; built with Bootstrap, jQuery &amp; JSON</footer>
+
+<script src="lib/jquery.min.js"></script>
+<script src="lib/bootstrap.bundle.min.js"></script>
+<script src="storyapp.js"></script>
+</body>
+</html>
