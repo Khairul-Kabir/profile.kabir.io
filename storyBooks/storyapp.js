@@ -8,11 +8,42 @@
 (function ($) {
   "use strict";
 
-  var INDEX_URL = "stories/stories-index.js";
+  var APP_ROOT = window.location.pathname.toLowerCase().indexOf("/storybooks/") !== -1 ? "" : "storyBooks/";
+  var INDEX_URL = resolvePath("stories/stories-index.js");
   var THEME_KEY = "ns-theme";
   var FONT_KEY = "ns-fontsize";
   var CONTINUE_KEY = "ns-continue";
   var WORDS_PER_MIN = 200;
+
+  function resolvePath(path) {
+    if (!path || /^(https?:|data:|\/)/i.test(path)) return path;
+
+    var queryIndex = path.indexOf("?");
+    var base = queryIndex === -1 ? path : path.slice(0, queryIndex);
+    var suffix = queryIndex === -1 ? "" : path.slice(queryIndex);
+
+    if (/^storybooks\//i.test(base)) {
+      base = base.replace(/^storybooks\//i, "storyBooks/");
+    }
+    if (/^storyassets\//i.test(base)) {
+      base = base.replace(/^storyassets\//i, "storyAssets/");
+    }
+
+    if (/^storyBooks\//i.test(base)) {
+      return APP_ROOT ? base : base.replace(/^storyBooks\//i, "") + suffix;
+    }
+    if (/^storyAssets\//i.test(base)) {
+      return APP_ROOT ? base.replace(/^storyAssets\//i, "storyBooks/storyAssets/") + suffix : base + suffix;
+    }
+    if (/^stories\//i.test(base)) {
+      return APP_ROOT ? base.replace(/^stories\//i, "storyBooks/stories/") + suffix : base + suffix;
+    }
+    if (/^assets\//i.test(base)) {
+      return APP_ROOT ? base.replace(/^assets\//i, "storyBooks/assets/") + suffix : base + suffix;
+    }
+
+    return APP_ROOT ? APP_ROOT + base + suffix : base + suffix;
+  }
 
   var storyCache = {};      // story id -> full story object
   var storySummaries = [];  // ordered list of story objects, for the shelf
@@ -57,7 +88,7 @@
   function loadScript(src) {
     var d = $.Deferred();
     var el = document.createElement("script");
-    el.src = src;
+    el.src = resolvePath(src);
     el.onload = function () { d.resolve(); };
     el.onerror = function () { d.reject(); };
     document.head.appendChild(el);
@@ -72,7 +103,7 @@
     return loadScript(INDEX_URL).then(function () {
       var files = window.NS_STORY_FILES || [];
       var requests = files.map(function (file) {
-        return loadScript(file).fail(function () {
+        return loadScript(resolvePath(file)).fail(function () {
           console.error("Nightshelf: failed to load story file", file);
         });
       });
@@ -95,7 +126,7 @@
       var files = window.NS_STORY_FILES || [];
       var match = files.filter(function (f) { return idFromPath(f) === storyId; })[0];
       if (!match) return $.Deferred().reject().promise();
-      return loadScript(match).then(function () {
+      return loadScript(resolvePath(match)).then(function () {
         var story = window.NS_STORIES && window.NS_STORIES[storyId];
         if (!story) return $.Deferred().reject().promise();
         storyCache[story.id] = story;
@@ -160,7 +191,7 @@
     );
     $card.css("display", "flex");
     $card.off("click").on("click", function () {
-      window.location.href = "story.html?story=" + encodeURIComponent(data.storyId) + "&ep=" + data.episodeIndex;
+      window.location.href = resolvePath("story.html?story=" + encodeURIComponent(data.storyId) + "&ep=" + data.episodeIndex);
     });
   }
 
@@ -229,15 +260,15 @@
     var $grid = $("#storyGrid").empty();
 
     if (!stories.length) {
-      $grid.append('<div class="ns-error"><h4>No stories on the shelf yet</h4><p>Add a story JSON file and list it in stories/stories.json.</p></div>');
+      $grid.append('<div class="ns-error"><h4>No stories on the shelf yet</h4><p>Add a story JSON file and list it in storybooks/stories/stories.json.</p></div>');
       return;
     }
 
     stories.forEach(function (story) {
       var $book = $(
         '<div class="ns-col" data-title="' + escapeAttr((story.title + " " + (story.genre || "")).toLowerCase()) + '">' +
-          '<a class="ns-book" href="story.html?story=' + encodeURIComponent(story.id) + '" aria-label="Open ' + escapeAttr(story.title) + '">' +
-            '<img src="' + escapeAttr(story.cover) + '" alt="' + escapeAttr(story.title) + ' cover" onerror="this.src=\'assets/default-cover.jpg\'">' +
+          '<a class="ns-book" href="' + resolvePath("story.html?story=" + encodeURIComponent(story.id)) + '" aria-label="Open ' + escapeAttr(story.title) + '">' +
+            '<img src="' + escapeAttr(resolvePath(story.cover)) + '" alt="' + escapeAttr(story.title) + ' cover" onerror="this.src=\'' + resolvePath("assets/default-cover.jpg") + '\'">' +
             '<div class="corner-fold"></div>' +
           "</a>" +
           '<div class="ns-book-meta">' +
@@ -315,8 +346,8 @@
   }
 
   function renderStoryView(story) {
-    $("#storyCover").attr("src", story.cover).attr("alt", story.title + " cover")
-      .on("error", function () { $(this).attr("src", "assets/default-cover.jpg"); });
+    $("#storyCover").attr("src", resolvePath(story.cover)).attr("alt", story.title + " cover")
+      .on("error", function () { $(this).attr("src", resolvePath("assets/default-cover.jpg")); });
     $("#storyGenre").text(story.genre || "");
     $("#storyTitle").text(story.title);
     $("#storyAuthor").text(story.author ? "by " + story.author : "");
@@ -330,9 +361,9 @@
       var excerpt = (ep.text || "").split("\n").join(" ").slice(0, 90);
       var badge = idx === lastRead ? '<div class="read-badge">&#9679; Last read</div>' : "";
       var $card = $(
-        '<a class="ns-episode-card" href="story.html?story=' + encodeURIComponent(story.id) + '&ep=' + idx + '" aria-label="Read ' + escapeAttr(ep.title) + '">' +
+        '<a class="ns-episode-card" href="' + resolvePath("story.html?story=" + encodeURIComponent(story.id) + '&ep=' + idx) + '" aria-label="Read ' + escapeAttr(ep.title) + '">' +
           '<div class="thumb">' +
-            '<img src="' + escapeAttr(ep.cover) + '" alt="' + escapeAttr(ep.title) + '" onerror="this.src=\'assets/default-cover.jpg\'">' +
+            '<img src="' + escapeAttr(resolvePath(ep.cover)) + '" alt="' + escapeAttr(ep.title) + '" onerror="this.src=\'' + resolvePath("assets/default-cover.jpg") + '\'">' +
             '<div class="num">Ep. ' + (idx + 1) + "</div>" +
           "</div>" +
           '<div class="body">' +
@@ -353,8 +384,8 @@
 
     document.title = ep.title + " — " + story.title;
     $("#readerStoryTitle").text(story.title);
-    $("#readerCover").attr("src", ep.cover).attr("alt", ep.title)
-      .on("error", function () { $(this).attr("src", "assets/default-cover.jpg"); });
+    $("#readerCover").attr("src", resolvePath(ep.cover)).attr("alt", ep.title)
+      .on("error", function () { $(this).attr("src", resolvePath("assets/default-cover.jpg")); });
     $("#readerKicker").text(
       "Episode " + (episodeIndex + 1) + " of " + episodes.length + " \u2014 " + readingTime(ep.text)
     );
@@ -407,24 +438,24 @@
   function wireStoryPageEvents(story) {
     $("#backBtn").on("click", function () {
       if (qs("ep") !== null) {
-        navigate("story.html?story=" + encodeURIComponent(story.id));
+        navigate(resolvePath("story.html?story=" + encodeURIComponent(story.id)));
       } else {
-        window.location.href = "index.html";
+        window.location.href = APP_ROOT ? "my-books.html" : "../my-books.html";
       }
     });
 
     $("#tocBtn").on("click", function () {
-      navigate("story.html?story=" + encodeURIComponent(story.id));
+      navigate(resolvePath("story.html?story=" + encodeURIComponent(story.id)));
     });
 
     $("#prevBtn").on("click", function () {
       if ($(this).hasClass("invisible")) return;
-      navigate("story.html?story=" + encodeURIComponent(story.id) + "&ep=" + $(this).data("target"));
+      navigate(resolvePath("story.html?story=" + encodeURIComponent(story.id) + "&ep=" + $(this).data("target")));
     });
 
     $("#nextBtn").on("click", function () {
       if ($(this).hasClass("invisible")) return;
-      navigate("story.html?story=" + encodeURIComponent(story.id) + "&ep=" + $(this).data("target"));
+      navigate(resolvePath("story.html?story=" + encodeURIComponent(story.id) + "&ep=" + $(this).data("target")));
     });
 
     function navigate(url) {
@@ -435,7 +466,7 @@
 
   function loadErrorHtml() {
     return '<div class="ns-error"><h4>Couldn\u2019t load the shelf</h4>' +
-      "<p>A story data file failed to load. Check that <code>stories/stories-index.js</code> lists the " +
+      "<p>A story data file failed to load. Check that <code>storyBooks/stories/stories-index.js</code> lists the " +
       "right file paths, and that each file it points to actually exists.</p></div>";
   }
 
