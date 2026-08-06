@@ -122,7 +122,7 @@
     document.addEventListener("keydown", function (e) {
       var key = (e.key || "").toLowerCase();
       var isCtrlCmd = e.ctrlKey || e.metaKey;
-      var blockedCombo = isCtrlCmd && ["c", "x", "s", "p", "u"].indexOf(key) !== -1;
+      var blockedCombo = isCtrlCmd && ["a", "c", "x", "s", "p", "u"].indexOf(key) !== -1;
       var blockedDevtools = e.key === "F12" || (isCtrlCmd && e.shiftKey && ["i", "j", "c"].indexOf(key) !== -1);
 
       if (blockedCombo || blockedDevtools) {
@@ -142,6 +142,58 @@
     });
     window.addEventListener("blur", function () { setPrivacyShield(true); });
     window.addEventListener("focus", function () { setPrivacyShield(false); });
+  }
+
+  /* ---------------------------------------------------------
+     Install prompt (PWA)
+     Registers the service worker (scoped so it only ever
+     touches Nightshelf's own paths — see sw.js) and shows a
+     custom "Install" button when the browser says the app is
+     installable. iOS Safari never fires beforeinstallprompt, so
+     it gets a one-tap set of instructions instead.
+     --------------------------------------------------------- */
+
+  function initInstallPrompt() {
+    var $btn = $("#installBtn");
+    if (!$btn.length) return;
+
+    var isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+    if (isStandalone) return; // already installed/running as an app — nothing to offer
+
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+      navigator.serviceWorker.register(resolvePath("/sw.js")).catch(function () {});
+    }
+
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) {
+      $btn.removeClass("d-none").find(".label").text("Add to Home Screen");
+      $btn.on("click", function () {
+        showToast("Tap the Share icon, then “Add to Home Screen” to install Nightshelf.");
+      });
+      return;
+    }
+
+    var deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      $btn.removeClass("d-none");
+    });
+
+    window.addEventListener("appinstalled", function () {
+      deferredPrompt = null;
+      $btn.addClass("d-none");
+      showToast("Nightshelf is installed — find it on your home screen.");
+    });
+
+    $btn.on("click", function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.finally(function () {
+        deferredPrompt = null;
+        $btn.addClass("d-none");
+      });
+    });
   }
 
   /* ---------------------------------------------------------
@@ -634,6 +686,7 @@
 
   $(function () {
     initContentProtection();
+    initInstallPrompt();
     if ($("#storyGrid").length) {
       initLandingPage();
     } else if ($("#view-story").length && $("#view-reader").length) {

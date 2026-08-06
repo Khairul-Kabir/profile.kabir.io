@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nightshelf — Story Reader</title>
 
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#12142A">
+<link rel="apple-touch-icon" href="storyBooks/assets/logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nightshelf">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
@@ -18,6 +25,7 @@
     <div class="ns-brand"><img src="storyBooks/assets/logo.png" alt="Nightshelf logo"> Nightshelf</div>
     <div class="d-flex align-items-center gap-2">
       <span class="ns-tagline d-none d-md-block me-2">Stories for after dark</span>
+      <button id="installBtn" class="ns-install-btn d-none" title="Install Nightshelf as an app"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg> <span class="label">Install</span></button>
       <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme"></button>
     </div>
   </div>

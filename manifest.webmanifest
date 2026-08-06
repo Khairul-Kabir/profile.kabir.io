@@ -1,0 +1,20 @@
+{
+  "name": "Nightshelf — Story Reader",
+  "short_name": "Nightshelf",
+  "description": "A cozy, episodic story-reading app with a lamplit reading-room theme.",
+  "start_url": "/my-books.html",
+  "scope": "/",
+  "id": "/my-books.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#12142A",
+  "theme_color": "#12142A",
+  "icons": [
+    {
+      "src": "storyBooks/assets/logo.png",
+      "sizes": "160x160",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
