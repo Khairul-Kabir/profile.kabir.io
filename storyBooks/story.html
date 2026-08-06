@@ -20,7 +20,7 @@
 <nav class="ns-navbar">
   <div class="container d-flex align-items-center justify-content-between">
     <div class="d-flex align-items-center gap-3">
-      <button id="backBtn" class="ns-back-btn">&larr; Back</button>
+      <button id="backBtn" class="ns-back-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back</button>
       <div class="ns-brand"><img src="assets/logo.png" alt="Nightshelf logo"> Nightshelf</div>
     </div>
     <div class="d-flex align-items-center gap-2">
@@ -29,17 +29,19 @@
         <button data-size="md" title="Default text" class="active">A</button>
         <button data-size="lg" title="Larger text">A&plus;</button>
       </div>
-      <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme">&#9788;</button>
+      <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme"></button>
     </div>
   </div>
 </nav>
+
+<div class="ns-disclaimer"><strong>Fiction notice:</strong> every story here is invented — a product of the writer&rsquo;s imagination. Any resemblance to real people, places, or events is entirely coincidental.</div>
 
 <main class="container">
 
   <!-- ============ Episode list (table of contents) ============ -->
   <section id="view-story" class="ns-view">
     <div class="ns-story-header">
-      <div class="cover-wrap"><img id="storyCover" src="" alt=""></div>
+      <div class="cover-wrap"><img id="storyCover" src="" alt="" draggable="false"></div>
       <div class="info">
         <span id="storyGenre" class="genre-tag"></span>
         <h2 id="storyTitle"></h2>
@@ -63,24 +65,29 @@
       </div>
 
       <article class="ns-page">
-        <img id="readerCover" class="ep-cover" src="" alt="">
+        <div id="readerPageBadge" class="ns-page-badge d-none"></div>
+        <img id="readerCover" class="ep-cover" src="" alt="" draggable="false">
         <div class="kicker" id="readerKicker"></div>
         <h3 id="readerTitle"></h3>
         <div id="readerText" class="story-text"></div>
       </article>
 
       <div class="ns-reader-nav">
-        <button id="prevBtn" class="ns-nav-btn"><span>&larr;</span><span class="label"></span></button>
-        <button id="tocBtn" class="ns-nav-btn">Contents</button>
-        <button id="nextBtn" class="ns-nav-btn"><span class="label"></span><span>&rarr;</span></button>
+        <button id="prevBtn" class="ns-nav-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg><span class="label"></span></button>
+        <button id="tocBtn" class="ns-nav-btn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> Contents</button>
+        <button id="nextBtn" class="ns-nav-btn"><span class="label"></span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
       </div>
+      <div class="ns-copy-note">&copy; story text is protected — please don&rsquo;t copy or redistribute.</div>
     </div>
   </section>
 
   <div id="storyErrorHost"></div>
 </main>
 
-<footer class="ns-footer">Nightshelf &middot; a small book-reader app &middot; built with Bootstrap, jQuery &amp; JSON</footer>
+<footer class="ns-footer">Nightshelf &middot; a small book-reader app</footer>
+
+<div id="nsToast" class="ns-toast" aria-live="polite"></div>
+<div id="nsPrivacyShield" aria-hidden="true"><div class="mark">Nightshelf</div></div>
 
 <script src="lib/jquery.min.js"></script>
 <script src="lib/bootstrap.bundle.min.js"></script>

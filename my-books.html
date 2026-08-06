@@ -18,30 +18,33 @@
     <div class="ns-brand"><img src="storyBooks/assets/logo.png" alt="Nightshelf logo"> Nightshelf</div>
     <div class="d-flex align-items-center gap-2">
       <span class="ns-tagline d-none d-md-block me-2">Stories for after dark</span>
-      <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme">&#9788;</button>
+      <button id="themeToggle" class="ns-icon-btn" title="Toggle light / dark reading mode" aria-label="Toggle theme"></button>
     </div>
   </div>
 </nav>
 
+<div class="ns-disclaimer"><strong>Fiction notice:</strong> every story here is invented — a product of the writer&rsquo;s imagination. Any resemblance to real people, places, or events is entirely coincidental.</div>
+
 <main class="container">
   <div class="ns-hero">
+    <div class="ns-hero-motes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
     <h1>Pick a story off the shelf</h1>
     <p>Every book here is told in episodes. Read one, or read through the night.</p>
     <div class="ns-search-wrap">
-      <span class="icon">&#128269;</span>
+      <span class="icon"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
       <input id="searchInput" type="text" placeholder="Search stories or genres&hellip;" autocomplete="off">
     </div>
   </div>
 
   <!-- Continue Reading (shown only if localStorage has a bookmark) -->
   <div id="continueCard" class="ns-continue">
-    <img id="continueCover" src="" alt="">
+    <img id="continueCover" src="" alt="" draggable="false">
     <div class="meta">
       <div class="label">Continue reading</div>
       <div class="title" id="continueTitle"></div>
       <div class="sub" id="continueSub"></div>
     </div>
-    <div class="go">&rarr;</div>
+    <div class="go"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
   </div>
 
   <div class="ns-shelf-label">On the shelf</div>
@@ -51,7 +54,10 @@
   <div id="noResults" class="ns-no-results">No stories match your search.</div>
 </main>
 
-<footer class="ns-footer">Nightshelf &middot; a small book-reader app &middot; built with Bootstrap, jQuery &amp; JSON</footer>
+<footer class="ns-footer">Nightshelf &middot; a small book-reader app</footer>
+
+<div id="nsToast" class="ns-toast" aria-live="polite"></div>
+<div id="nsPrivacyShield" aria-hidden="true"><div class="mark">Nightshelf</div></div>
 
 <script src="storyBooks/lib/jquery.min.js"></script>
 <script src="storyBooks/lib/bootstrap.bundle.min.js"></script>

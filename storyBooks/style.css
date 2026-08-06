@@ -69,7 +69,23 @@ body{
   font-family: var(--sans);
   min-height: 100vh;
   transition: background 0.3s ease, color 0.3s ease;
+  -webkit-user-select: none;
+  user-select: none;
 }
+
+/* A faint animated grain over everything — reads as "printed paper",
+   and quietly defeats flat colour-matched re-shoots of the screen. */
+body::before{
+  content: "";
+  position: fixed; inset: 0; z-index: 2;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+input, textarea{ -webkit-user-select: text; user-select: text; }
+img{ -webkit-user-drag: none; user-drag: none; }
 
 ::selection{ background: var(--amber); color: #1A1305; }
 a{ color: var(--amber-soft); text-decoration: none; }
@@ -90,6 +106,20 @@ a{ color: var(--amber-soft); text-decoration: none; }
   top: 0;
   z-index: 20;
 }
+
+.ns-disclaimer{
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  background: var(--bg-deep);
+  border-bottom: 1px dashed var(--border);
+  padding: 0.5rem 1rem;
+  position: relative;
+  z-index: 19;
+}
+.ns-disclaimer strong{ font-style: normal; font-weight: 600; color: var(--ink-muted); }
 
 .ns-brand{
   font-family: var(--serif);
@@ -122,7 +152,10 @@ a{ color: var(--amber-soft); text-decoration: none; }
   font-size: 1rem;
   transition: all 0.2s ease;
 }
+.ns-icon-btn svg{ display: block; transition: transform 0.4s cubic-bezier(.2,.8,.2,1); }
 .ns-icon-btn:hover{ color: var(--ink); border-color: var(--amber); background: rgba(232,163,61,0.08); }
+.ns-icon-btn:hover svg{ transform: rotate(18deg) scale(1.08); }
+.ns-icon-btn:active svg{ transform: rotate(-10deg) scale(0.9); }
 
 .ns-back-btn{
   background: transparent;
@@ -136,7 +169,9 @@ a{ color: var(--amber-soft); text-decoration: none; }
   gap: 0.4rem;
   transition: all 0.2s ease;
 }
+.ns-back-btn svg{ display: block; transition: transform 0.2s ease; }
 .ns-back-btn:hover{ color: var(--ink); border-color: var(--amber); background: rgba(232,163,61,0.08); }
+.ns-back-btn:hover svg{ transform: translateX(-2px); }
 
 main{ padding-bottom: 5rem; }
 
@@ -144,7 +179,14 @@ main{ padding-bottom: 5rem; }
 .ns-view.active{ display: block; animation: fadeUp 0.4s ease; }
 
 @keyframes fadeUp{ from{ opacity: 0; transform: translateY(10px);} to{ opacity: 1; transform: translateY(0);} }
-@media (prefers-reduced-motion: reduce){ .ns-view.active{ animation: none; } * { scroll-behavior: auto !important; } }
+@media (prefers-reduced-motion: reduce){
+  .ns-view.active{ animation: none; }
+  .ns-col, .ns-episode-card{ opacity: 1 !important; transform: none !important; animation: none !important; }
+  .ns-page.ns-flip-next, .ns-page.ns-flip-prev{ animation: none !important; }
+  .ns-hero-motes{ display: none; }
+  .ns-loading .spinner{ animation: spin 0.9s linear infinite !important; }
+  * { scroll-behavior: auto !important; }
+}
 
 /* =========================================================
    Search box
@@ -171,7 +213,8 @@ main{ padding-bottom: 5rem; }
 }
 .ns-search-wrap .icon{
   position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%);
-  color: var(--ink-faint); font-size: 0.9rem; pointer-events: none;
+  color: var(--ink-faint); pointer-events: none;
+  display: inline-flex;
 }
 .ns-no-results{
   text-align: center;
@@ -215,9 +258,27 @@ main{ padding-bottom: 5rem; }
 /* =========================================================
    Landing — the shelf
    ========================================================= */
-.ns-hero{ padding: 2.4rem 0 1.4rem; text-align: center; }
-.ns-hero h1{ font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; margin-bottom: 0.5rem; }
-.ns-hero p{ color: var(--ink-muted); font-size: 1.02rem; max-width: 520px; margin: 0 auto 1.6rem; }
+.ns-hero{ padding: 2.4rem 0 1.4rem; text-align: center; position: relative; }
+.ns-hero h1{ font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; margin-bottom: 0.5rem; position: relative; }
+.ns-hero p{ color: var(--ink-muted); font-size: 1.02rem; max-width: 520px; margin: 0 auto 1.6rem; position: relative; }
+
+/* Slow drifting light motes behind the hero — a lamplit-room touch */
+.ns-hero-motes{ position: absolute; inset: -1rem 0 auto 0; height: 220px; overflow: hidden; pointer-events: none; z-index: 0; }
+.ns-hero-motes span{
+  position: absolute; bottom: -10px; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--amber-soft); opacity: 0; filter: blur(0.5px);
+  animation: moteRise 9s ease-in infinite;
+}
+.ns-hero-motes span:nth-child(1){ left: 8%;  animation-delay: 0s;   }
+.ns-hero-motes span:nth-child(2){ left: 28%; animation-delay: 1.8s; }
+.ns-hero-motes span:nth-child(3){ left: 50%; animation-delay: 3.6s; }
+.ns-hero-motes span:nth-child(4){ left: 72%; animation-delay: 5.4s; }
+.ns-hero-motes span:nth-child(5){ left: 90%; animation-delay: 7.2s; }
+@keyframes moteRise{
+  0%{ transform: translate(0, 0); opacity: 0; }
+  15%{ opacity: 0.55; }
+  100%{ transform: translate(12px, -200px); opacity: 0; }
+}
 
 .ns-shelf-label{
   font-family: var(--serif); font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
@@ -252,7 +313,14 @@ main{ padding-bottom: 5rem; }
   box-shadow: 2px 0 4px rgba(0,0,0,0.3);
   z-index: -1;
 }
-.ns-book:hover{ transform: perspective(600px) rotateY(-8deg) translateY(-4px); box-shadow: -10px 16px 28px rgba(0,0,0,0.45); }
+.ns-book:hover{
+  transform: perspective(600px) rotateY(-8deg) translateY(-4px);
+  box-shadow: -10px 16px 28px rgba(0,0,0,0.45), 0 0 26px rgba(232,163,61,0.22);
+}
+
+.ns-col{ opacity: 0; transform: translateY(16px); }
+.ns-col.ns-book-in{ animation: bookIn 0.55s cubic-bezier(.2,.8,.2,1) forwards; }
+@keyframes bookIn{ to{ opacity: 1; transform: translateY(0); } }
 .ns-book .corner-fold{
   position: absolute; right: 0; bottom: 0; width: 0; height: 0;
   border-style: solid; border-width: 0 0 34px 34px;
@@ -288,9 +356,11 @@ main{ padding-bottom: 5rem; }
 .ns-episode-card{
   cursor: pointer; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md);
   overflow: hidden; display: flex; flex-direction: column;
-  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  opacity: 0; transform: translateY(16px);
 }
-.ns-episode-card:hover{ transform: translateY(-4px); background: var(--card-hover); border-color: var(--border-strong); }
+.ns-episode-card.ns-in{ animation: bookIn 0.55s cubic-bezier(.2,.8,.2,1) forwards; }
+.ns-episode-card:hover{ transform: translateY(-4px); background: var(--card-hover); border-color: var(--border-strong); box-shadow: 0 14px 26px rgba(0,0,0,0.28); }
 .ns-episode-card .thumb{ aspect-ratio: 16/10; overflow: hidden; position: relative; }
 .ns-episode-card .thumb img{ width: 100%; height: 100%; object-fit: cover; display: block; }
 .ns-episode-card .num{
@@ -303,6 +373,10 @@ main{ padding-bottom: 5rem; }
 .ns-episode-card .read-badge{
   display: inline-block; margin-top: 0.4rem; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--amber-deep);
+}
+.ns-episode-card .pages-tag{
+  display: inline-block; margin-top: 0.4rem; margin-right: 0.5rem; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-faint); border: 1px solid var(--border-strong); border-radius: 999px; padding: 0.05rem 0.5rem;
 }
 
 /* =========================================================
@@ -350,12 +424,35 @@ main{ padding-bottom: 5rem; }
   padding: 3rem clamp(1.4rem, 5vw, 4.2rem);
   box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.06);
   position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
 }
 .ns-page::before{
   content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 40px;
   background: linear-gradient(90deg, rgba(0,0,0,0.10), transparent);
   border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   pointer-events: none;
+  z-index: 1;
+}
+/* Faint tiled "Nightshelf" watermark — traceable if the page is ever
+   photographed or screen-captured, since blocking capture outright
+   isn't something a web page can actually do. */
+.ns-page::after{
+  content: ""; position: absolute; inset: -10%; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='150'%3E%3Ctext x='0' y='90' font-family='Georgia, serif' font-size='22' fill='%232B2419' fill-opacity='0.045' transform='rotate(-18 0 90)'%3ENightshelf%3C/text%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+@keyframes pageFlipNext{ from{ opacity: 0.2; transform: rotateY(6deg) scale(0.985); } to{ opacity: 1; transform: none; } }
+@keyframes pageFlipPrev{ from{ opacity: 0.2; transform: rotateY(-6deg) scale(0.985); } to{ opacity: 1; transform: none; } }
+.ns-page.ns-flip-next{ animation: pageFlipNext 0.4s cubic-bezier(.2,.8,.2,1); }
+.ns-page.ns-flip-prev{ animation: pageFlipPrev 0.4s cubic-bezier(.2,.8,.2,1); }
+
+.ns-page-badge{
+  position: absolute; top: 16px; right: 18px; z-index: 2;
+  font-family: var(--serif); font-size: 0.72rem; letter-spacing: 0.04em;
+  color: var(--amber-deep); background: rgba(232,163,61,0.16);
+  border: 1px solid rgba(184,122,34,0.35); border-radius: 999px; padding: 0.2rem 0.7rem;
 }
 
 .ns-page .ep-cover{ width: 100%; max-height: 260px; object-fit: cover; border-radius: 10px; margin-bottom: 1.6rem; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
@@ -368,6 +465,14 @@ main{ padding-bottom: 5rem; }
 .ns-page .story-text p:first-of-type::first-letter{
   font-family: var(--serif); font-size: 3.4rem; font-weight: 600; float: left; line-height: 0.8;
   padding: 0.1rem 0.35rem 0 0; color: var(--amber-deep);
+}
+.ns-page .page-continues{
+  text-align: center; font-family: var(--sans); font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--amber-deep); opacity: 0.8; margin-top: 0.6rem;
+}
+.ns-copy-note{
+  max-width: 760px; margin: 0.9rem auto 0; text-align: center;
+  font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.02em;
 }
 
 .ns-reader-nav{ max-width: 760px; margin: 1.6rem auto 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
@@ -386,13 +491,54 @@ main{ padding-bottom: 5rem; }
    Utility
    ========================================================= */
 .ns-loading{ text-align: center; padding: 4rem 1rem; color: var(--ink-faint); }
-.ns-loading .spinner{ width: 34px; height: 34px; border: 3px solid var(--border-strong); border-top-color: var(--amber); border-radius: 50%; margin: 0 auto 1rem; animation: spin 0.9s linear infinite; }
+.ns-loading .spinner{
+  width: 34px; height: 34px; border: 3px solid var(--border-strong); border-top-color: var(--amber); border-radius: 50%; margin: 0 auto 1rem;
+  animation: spin 0.9s linear infinite, flicker 1.6s ease-in-out infinite;
+}
 @keyframes spin{ to{ transform: rotate(360deg); } }
+@keyframes flicker{ 0%, 100%{ box-shadow: 0 0 6px rgba(232,163,61,0.35); } 50%{ box-shadow: 0 0 18px rgba(232,163,61,0.7); } }
 
 .ns-error{ max-width: 560px; margin: 3rem auto; text-align: center; color: var(--ink-muted); border: 1px dashed var(--border-strong); border-radius: var(--radius-md); padding: 2rem; }
 .ns-error h4{ font-family: var(--serif); color: var(--ink); margin-bottom: 0.6rem; }
 
 footer.ns-footer{ text-align: center; color: var(--ink-faint); font-size: 0.78rem; padding: 2rem 0 1rem; border-top: 1px solid var(--border); margin-top: 3rem; }
+
+/* =========================================================
+   Content protection UI — toast + focus-loss privacy shield
+   ========================================================= */
+.ns-toast{
+  position: fixed; left: 50%; bottom: 26px; z-index: 70;
+  transform: translate(-50%, 14px);
+  background: var(--panel); color: var(--ink); border: 1px solid var(--border-strong);
+  padding: 0.6rem 1.15rem; border-radius: 999px; font-size: 0.84rem;
+  box-shadow: 0 14px 32px rgba(0,0,0,0.4);
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 90vw; text-align: center;
+}
+.ns-toast.show{ opacity: 1; transform: translate(-50%, 0); }
+
+#nsPrivacyShield{
+  position: fixed; inset: 0; z-index: 9998;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(6, 7, 18, 0.82);
+  backdrop-filter: blur(22px) saturate(60%);
+  -webkit-backdrop-filter: blur(22px) saturate(60%);
+  opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+#nsPrivacyShield.active{ opacity: 1; }
+#nsPrivacyShield .mark{
+  font-family: var(--serif); font-weight: 600; letter-spacing: 0.06em;
+  color: var(--amber-soft); font-size: 1.15rem; opacity: 0.85;
+}
+
+@media print{
+  body > *{ visibility: hidden !important; }
+  body::after{
+    content: "Printing is disabled for this content.";
+    visibility: visible; position: fixed; inset: 0; display: flex;
+    align-items: center; justify-content: center; font-family: sans-serif; font-size: 1.2rem;
+  }
+}
 
 @media (max-width: 575.98px){
   .ns-page{ padding: 2.2rem 1.2rem; border-radius: 14px; }

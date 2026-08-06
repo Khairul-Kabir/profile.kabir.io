@@ -1,6 +1,6 @@
 /* ===========================================================
    Nightshelf — storyapp.js
-   Shared logic for index.html (landing/shelf) and story.html
+   Shared logic for my-books.html (landing/shelf) and story.html
    (episode list + reader). Detects which page it's on by the
    DOM elements present and wires up only what's needed.
    =========================================================== */
@@ -14,6 +14,12 @@
   var FONT_KEY = "ns-fontsize";
   var CONTINUE_KEY = "ns-continue";
   var WORDS_PER_MIN = 200;
+  var PAGE_CHAR_LIMIT = 1100; // episodes longer than this get split into reader pages
+
+  var ICONS = {
+    sun: '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>',
+    moon: '<svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M20.4 14.7A8.4 8.4 0 0 1 9.3 3.6a.5.5 0 0 0-.6-.7A9 9 0 1 0 21.1 15.3a.5.5 0 0 0-.7-.6Z"/></svg>'
+  };
 
   function resolvePath(path) {
     if (!path || /^(https?:|data:|\/)/i.test(path)) return path;
@@ -68,11 +74,74 @@
   function applyTheme(theme) {
     if (theme === "light") {
       document.documentElement.setAttribute("data-theme", "light");
-      $("#themeToggle").html("&#9789;").attr("title", "Switch to night mode");
+      $("#themeToggle").html(ICONS.moon).attr("title", "Switch to night mode");
     } else {
       document.documentElement.removeAttribute("data-theme");
-      $("#themeToggle").html("&#9788;").attr("title", "Switch to day mode");
+      $("#themeToggle").html(ICONS.sun).attr("title", "Switch to day mode");
     }
+  }
+
+  /* ---------------------------------------------------------
+     Content protection (best-effort deterrents)
+     Nothing running in a browser tab can block an OS-level
+     screenshot or a phone camera — this is a deterrent layer
+     only: it disables the easy paths (select/copy/right-click/
+     dev tools/print) and dims the page when the tab or window
+     loses focus, the way a few reading apps do.
+     --------------------------------------------------------- */
+
+  var toastTimer;
+  function showToast(msg) {
+    var $t = $("#nsToast");
+    if (!$t.length) return;
+    clearTimeout(toastTimer);
+    $t.text(msg).addClass("show");
+    toastTimer = setTimeout(function () { $t.removeClass("show"); }, 2200);
+  }
+
+  function setPrivacyShield(on) {
+    $("#nsPrivacyShield").toggleClass("active", !!on);
+  }
+
+  function initContentProtection() {
+    document.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+      showToast("Right-click is turned off on Nightshelf.");
+    });
+
+    document.addEventListener("copy", function (e) {
+      e.preventDefault();
+      showToast("Copying story text isn’t allowed here.");
+    });
+    document.addEventListener("cut", function (e) { e.preventDefault(); });
+
+    document.addEventListener("dragstart", function (e) {
+      if (e.target && e.target.tagName === "IMG") e.preventDefault();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      var key = (e.key || "").toLowerCase();
+      var isCtrlCmd = e.ctrlKey || e.metaKey;
+      var blockedCombo = isCtrlCmd && ["c", "x", "s", "p", "u"].indexOf(key) !== -1;
+      var blockedDevtools = e.key === "F12" || (isCtrlCmd && e.shiftKey && ["i", "j", "c"].indexOf(key) !== -1);
+
+      if (blockedCombo || blockedDevtools) {
+        e.preventDefault();
+        showToast("That shortcut is disabled on this page.");
+        return;
+      }
+      if (e.key === "PrintScreen") {
+        setPrivacyShield(true);
+        setTimeout(function () { setPrivacyShield(false); }, 700);
+        showToast("Screenshots are discouraged — please respect the author’s work.");
+      }
+    });
+
+    document.addEventListener("visibilitychange", function () {
+      setPrivacyShield(document.hidden);
+    });
+    window.addEventListener("blur", function () { setPrivacyShield(true); });
+    window.addEventListener("focus", function () { setPrivacyShield(false); });
   }
 
   /* ---------------------------------------------------------
@@ -82,7 +151,7 @@
      over AJAX. Browsers block fetch()/XHR against local files
      opened with file://, but a normal <script src="..."> tag
      works everywhere, including a straight double-click on
-     index.html with no local server needed.
+     my-books.html with no local server needed.
      --------------------------------------------------------- */
 
   function loadScript(src) {
@@ -156,17 +225,42 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  // Split an episode's text into reader "pages" on paragraph
+  // boundaries only — never mid-paragraph — once it grows past
+  // PAGE_CHAR_LIMIT. Short episodes come back as a single page.
+  function paginateText(text) {
+    var paras = (text || "").split(/\n\s*\n/).map(function (p) { return p.trim(); }).filter(Boolean);
+    if (!paras.length) return [[]];
+
+    var pages = [];
+    var current = [];
+    var currentLen = 0;
+
+    paras.forEach(function (p) {
+      if (current.length && currentLen + p.length > PAGE_CHAR_LIMIT) {
+        pages.push(current);
+        current = [];
+        currentLen = 0;
+      }
+      current.push(p);
+      currentLen += p.length;
+    });
+    if (current.length) pages.push(current);
+    return pages;
+  }
+
   /* ---------------------------------------------------------
      Continue Reading (localStorage bookmark)
      --------------------------------------------------------- */
 
-  function saveContinue(story, episodeIndex) {
+  function saveContinue(story, episodeIndex, pageIndex) {
     var ep = story.episodes[episodeIndex];
     localStorage.setItem(CONTINUE_KEY, JSON.stringify({
       storyId: story.id,
       storyTitle: story.title,
       storyCover: story.cover,
       episodeIndex: episodeIndex,
+      pageIndex: pageIndex || 0,
       episodeTitle: ep.title,
       totalEpisodes: story.episodes.length,
       ts: Date.now()
@@ -187,11 +281,13 @@
     $("#continueCover").attr("src", data.storyCover).attr("alt", data.storyTitle);
     $("#continueTitle").text(data.storyTitle);
     $("#continueSub").text(
-      "Episode " + (data.episodeIndex + 1) + " of " + data.totalEpisodes + " \u2014 " + data.episodeTitle
+      "Episode " + (data.episodeIndex + 1) + " of " + data.totalEpisodes + " — " + data.episodeTitle
     );
     $card.css("display", "flex");
     $card.off("click").on("click", function () {
-      window.location.href = resolvePath("story.html?story=" + encodeURIComponent(data.storyId) + "&ep=" + data.episodeIndex);
+      var url = "story.html?story=" + encodeURIComponent(data.storyId) + "&ep=" + data.episodeIndex;
+      if (data.pageIndex) url += "&pg=" + data.pageIndex;
+      window.location.href = resolvePath(url);
     });
   }
 
@@ -239,7 +335,7 @@
   }
 
   /* ===========================================================
-     PAGE: index.html — the shelf
+     PAGE: my-books.html — the shelf
      =========================================================== */
 
   function initLandingPage() {
@@ -260,15 +356,15 @@
     var $grid = $("#storyGrid").empty();
 
     if (!stories.length) {
-      $grid.append('<div class="ns-error"><h4>No stories on the shelf yet</h4><p>Add a story JSON file and list it in storybooks/stories/stories.json.</p></div>');
+      $grid.append('<div class="ns-error"><h4>No stories on the shelf yet</h4><p>Add a story JSON file and list it in storybooks/stories/stories-index.js.</p></div>');
       return;
     }
 
-    stories.forEach(function (story) {
+    stories.forEach(function (story, idx) {
       var $book = $(
         '<div class="ns-col" data-title="' + escapeAttr((story.title + " " + (story.genre || "")).toLowerCase()) + '">' +
           '<a class="ns-book" href="' + resolvePath("story.html?story=" + encodeURIComponent(story.id)) + '" aria-label="Open ' + escapeAttr(story.title) + '">' +
-            '<img src="' + escapeAttr(resolvePath(story.cover)) + '" alt="' + escapeAttr(story.title) + ' cover" onerror="this.src=\'' + resolvePath("assets/default-cover.jpg") + '\'">' +
+            '<img src="' + escapeAttr(resolvePath(story.cover)) + '" alt="' + escapeAttr(story.title) + ' cover" draggable="false" onerror="this.src=\'' + resolvePath("assets/default-cover.jpg") + '\'">' +
             '<div class="corner-fold"></div>' +
           "</a>" +
           '<div class="ns-book-meta">' +
@@ -277,6 +373,7 @@
           "</div>" +
         "</div>"
       );
+      $book.css("animation-delay", Math.min(idx * 55, 400) + "ms").addClass("ns-book-in");
       $grid.append($book);
     });
   }
@@ -298,6 +395,8 @@
      PAGE: story.html — episode list + reader
      =========================================================== */
 
+  var lastReaderKey = null; // "episodeIndex|pageIndex" of the previously rendered page, for flip direction
+
   function initStoryPage() {
     initTheme();
     initFontControls();
@@ -305,7 +404,7 @@
 
     var storyId = qs("story");
     if (!storyId) {
-      window.location.href = "index.html";
+      window.location.href = "my-books.html";
       return;
     }
 
@@ -328,9 +427,16 @@
     if (epParam !== null) {
       var idx = parseInt(epParam, 10);
       if (isNaN(idx) || idx < 0 || idx >= story.episodes.length) idx = 0;
-      renderReaderView(story, idx);
+
+      var pages = paginateText(story.episodes[idx].text);
+      var pgParam = qs("pg");
+      var pgIdx = pgParam !== null ? parseInt(pgParam, 10) : 0;
+      if (isNaN(pgIdx) || pgIdx < 0 || pgIdx >= pages.length) pgIdx = 0;
+
+      renderReaderView(story, idx, pgIdx, pages);
       showStoryView("reader");
     } else {
+      lastReaderKey = null;
       renderStoryView(story);
       showStoryView("story");
     }
@@ -360,41 +466,69 @@
     story.episodes.forEach(function (ep, idx) {
       var excerpt = (ep.text || "").split("\n").join(" ").slice(0, 90);
       var badge = idx === lastRead ? '<div class="read-badge">&#9679; Last read</div>' : "";
+      var pageCount = paginateText(ep.text).length;
+      var pagesTag = pageCount > 1 ? '<span class="pages-tag">' + pageCount + " pages</span>" : "";
       var $card = $(
         '<a class="ns-episode-card" href="' + resolvePath("story.html?story=" + encodeURIComponent(story.id) + '&ep=' + idx) + '" aria-label="Read ' + escapeAttr(ep.title) + '">' +
           '<div class="thumb">' +
-            '<img src="' + escapeAttr(resolvePath(ep.cover)) + '" alt="' + escapeAttr(ep.title) + '" onerror="this.src=\'' + resolvePath("assets/default-cover.jpg") + '\'">' +
+            '<img src="' + escapeAttr(resolvePath(ep.cover)) + '" alt="' + escapeAttr(ep.title) + '" draggable="false" onerror="this.src=\'' + resolvePath("assets/default-cover.jpg") + '\'">' +
             '<div class="num">Ep. ' + (idx + 1) + "</div>" +
           "</div>" +
           '<div class="body">' +
             '<div class="title">' + escapeHtml(ep.title) + "</div>" +
             '<div class="excerpt">' + escapeHtml(excerpt) + "&hellip;</div>" +
-            '<div class="read-badge-wrap">' + badge + "</div>" +
+            '<div class="read-badge-wrap">' + badge + pagesTag + "</div>" +
           "</div>" +
         "</a>"
       );
+      $card.css("animation-delay", Math.min(idx * 55, 400) + "ms").addClass("ns-in");
       $grid.append($card);
     });
   }
 
-  function renderReaderView(story, episodeIndex) {
+  function renderReaderView(story, episodeIndex, pageIndex, pages) {
     var episodes = story.episodes;
     var ep = episodes[episodeIndex];
     if (!ep) return;
 
-    document.title = ep.title + " — " + story.title;
+    pages = pages || paginateText(ep.text);
+    if (pageIndex == null || isNaN(pageIndex) || pageIndex < 0) pageIndex = 0;
+    if (pageIndex >= pages.length) pageIndex = pages.length - 1;
+
+    var key = episodeIndex + "|" + pageIndex;
+    var direction = null;
+    if (lastReaderKey !== null && lastReaderKey !== key) {
+      var prevParts = lastReaderKey.split("|").map(Number);
+      direction = (episodeIndex > prevParts[0] || (episodeIndex === prevParts[0] && pageIndex > prevParts[1])) ? "next" : "prev";
+    }
+    lastReaderKey = key;
+
+    var totalPages = pages.length;
+    document.title = ep.title + (totalPages > 1 ? " (Page " + (pageIndex + 1) + ")" : "") + " — " + story.title;
+
     $("#readerStoryTitle").text(story.title);
     $("#readerCover").attr("src", resolvePath(ep.cover)).attr("alt", ep.title)
+      .toggleClass("d-none", pageIndex > 0)
       .on("error", function () { $(this).attr("src", resolvePath("assets/default-cover.jpg")); });
     $("#readerKicker").text(
-      "Episode " + (episodeIndex + 1) + " of " + episodes.length + " \u2014 " + readingTime(ep.text)
+      "Episode " + (episodeIndex + 1) + " of " + episodes.length + " — " + readingTime(ep.text)
     );
     $("#readerTitle").text(ep.title);
 
+    var $pageBadge = $("#readerPageBadge");
+    if (totalPages > 1) {
+      $pageBadge.text("Page " + (pageIndex + 1) + " of " + totalPages).removeClass("d-none");
+    } else {
+      $pageBadge.addClass("d-none");
+    }
+
     var $text = $("#readerText").empty();
-    (ep.text || "").split(/\n\s*\n/).forEach(function (para) {
-      if (para.trim()) $text.append($("<p>").text(para.trim()));
+    pages[pageIndex].forEach(function (para) {
+      $text.append($("<p>").text(para));
     });
+    if (pageIndex < totalPages - 1) {
+      $text.append('<div class="page-continues">Continued on next page &rsaquo;</div>');
+    }
 
     var $dots = $("#progressDots").empty();
     episodes.forEach(function (_, idx) {
@@ -405,25 +539,43 @@
     });
 
     var $prev = $("#prevBtn");
-    if (episodeIndex > 0) {
+    if (pageIndex > 0) {
+      $prev.removeClass("invisible").prop("disabled", false)
+        .find(".label").text("Previous page");
+      $prev.data("target-ep", episodeIndex).data("target-pg", pageIndex - 1);
+    } else if (episodeIndex > 0) {
+      var prevPages = paginateText(episodes[episodeIndex - 1].text);
       $prev.removeClass("invisible").prop("disabled", false)
         .find(".label").text(episodes[episodeIndex - 1].title);
-      $prev.data("target", episodeIndex - 1);
+      $prev.data("target-ep", episodeIndex - 1).data("target-pg", prevPages.length - 1);
     } else {
       $prev.addClass("invisible");
     }
 
     var $next = $("#nextBtn");
-    if (episodeIndex < episodes.length - 1) {
+    if (pageIndex < totalPages - 1) {
+      $next.removeClass("invisible").prop("disabled", false)
+        .find(".label").text("Next page");
+      $next.data("target-ep", episodeIndex).data("target-pg", pageIndex + 1);
+    } else if (episodeIndex < episodes.length - 1) {
       $next.removeClass("invisible").prop("disabled", false)
         .find(".label").text(episodes[episodeIndex + 1].title);
-      $next.data("target", episodeIndex + 1);
+      $next.data("target-ep", episodeIndex + 1).data("target-pg", 0);
     } else {
       $next.addClass("invisible");
     }
 
-    saveContinue(story, episodeIndex);
+    saveContinue(story, episodeIndex, pageIndex);
     window.scrollTo({ top: 0, behavior: "auto" });
+
+    var $page = $(".ns-page");
+    $page.removeClass("ns-flip-next ns-flip-prev");
+    if (direction) {
+      // restart the animation on the next frame
+      requestAnimationFrame(function () {
+        $page.addClass(direction === "next" ? "ns-flip-next" : "ns-flip-prev");
+      });
+    }
   }
 
   function getLastReadIndex(storyId) {
@@ -450,13 +602,19 @@
 
     $("#prevBtn").on("click", function () {
       if ($(this).hasClass("invisible")) return;
-      navigate(resolvePath("story.html?story=" + encodeURIComponent(story.id) + "&ep=" + $(this).data("target")));
+      navigate(buildEpUrl(story.id, $(this).data("target-ep"), $(this).data("target-pg")));
     });
 
     $("#nextBtn").on("click", function () {
       if ($(this).hasClass("invisible")) return;
-      navigate(resolvePath("story.html?story=" + encodeURIComponent(story.id) + "&ep=" + $(this).data("target")));
+      navigate(buildEpUrl(story.id, $(this).data("target-ep"), $(this).data("target-pg")));
     });
+
+    function buildEpUrl(storyId, ep, pg) {
+      var url = "story.html?story=" + encodeURIComponent(storyId) + "&ep=" + ep;
+      if (pg) url += "&pg=" + pg;
+      return resolvePath(url);
+    }
 
     function navigate(url) {
       window.history.pushState({}, "", url);
@@ -465,7 +623,7 @@
   }
 
   function loadErrorHtml() {
-    return '<div class="ns-error"><h4>Couldn\u2019t load the shelf</h4>' +
+    return '<div class="ns-error"><h4>Couldn’t load the shelf</h4>' +
       "<p>A story data file failed to load. Check that <code>storyBooks/stories/stories-index.js</code> lists the " +
       "right file paths, and that each file it points to actually exists.</p></div>";
   }
@@ -475,6 +633,7 @@
      --------------------------------------------------------- */
 
   $(function () {
+    initContentProtection();
     if ($("#storyGrid").length) {
       initLandingPage();
     } else if ($("#view-story").length && $("#view-reader").length) {
