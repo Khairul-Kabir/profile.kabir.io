@@ -140,6 +140,14 @@
       "featured": true
     },
     {
+      "icon": "bi-book-half",
+      "title": "Nightshelf — Story Reader",
+      "description": "A cozy, episodic story-reading app with a lamplit reading-room theme. Features dark/light modes, adjustable text size, auto-pagination for long episodes, reading-progress tracking, and built-in copy/screenshot deterrents to protect the writing.",
+      "tags": ["JavaScript", "jQuery", "Bootstrap", "CSS3", "Reading UX"],
+      "link": "my-books.html",
+      "featured": true
+    },
+    {
       "icon": "bi-hospital",
       "title": "Healthcare Management System",
       "description": "A comprehensive electronic health record and hospital management platform built during 3 years at Niramoy. Covered patient registration, appointment scheduling, prescription management, billing, and lab reports — serving multiple clinics across Bangladesh.",
