@@ -5,7 +5,7 @@ window.NS_STORIES["rashed"] = {
   "title": "রাশেদ: সময়ের শেষ সমীকরণ",
   "author": "", // TODO: fill in author name
   "genre": "Sci-Fi • Thriller • Mystery • Emotional • Adventure",
-  "cover": "storyAssets/rashed/cover.jpg",
+  "cover": "storyAssets/rashed/rashed-cover.png",
   "description": "", // TODO: fill in a short description
   "episodes": [
     {
