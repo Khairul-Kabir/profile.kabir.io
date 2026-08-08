@@ -1,0 +1,24 @@
+<svg width="1200" height="1800" viewBox="0 0 1200 1800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#07111e"/>
+      <stop offset="50%" stop-color="#102c40"/>
+      <stop offset="100%" stop-color="#0b1830"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="36%" r="45%">
+      <stop offset="0%" stop-color="#6cc3ff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#6cc3ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1800" fill="url(#bg)"/>
+  <circle cx="600" cy="540" r="480" fill="url(#glow)"/>
+  <path d="M350 1180 L600 610 L850 1180 Z" fill="#0d1c2a" stroke="#8ed8ff" stroke-width="10" opacity="0.9"/>
+  <path d="M510 715 L600 570 L690 715" fill="none" stroke="#d9f1ff" stroke-width="18" stroke-linecap="round"/>
+  <path d="M430 1180 L520 950 L600 880 L680 950 L770 1180" fill="none" stroke="#8ed8ff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="600" cy="1090" r="135" fill="#0b2236" stroke="#b0dfff" stroke-width="10"/>
+  <circle cx="600" cy="1090" r="78" fill="#d9f3ff" opacity="0.18"/>
+  <path d="M540 1090 L600 1035 L660 1090 L600 1145 Z" fill="#d9f3ff" opacity="0.7"/>
+  <rect x="140" y="1460" width="920" height="200" rx="18" fill="#0c1729" fill-opacity="0.7" stroke="#8ed8ff" stroke-opacity="0.6"/>
+  <text x="600" y="1538" text-anchor="middle" fill="#ecf8ff" font-size="82" font-family="Segoe UI, Arial, sans-serif" font-weight="700" letter-spacing="6">UNKNOWN</text>
+  <text x="600" y="1624" text-anchor="middle" fill="#8ed8ff" font-size="74" font-family="Segoe UI, Arial, sans-serif" font-weight="600" letter-spacing="9">GUARDIAN</text>
+</svg>
