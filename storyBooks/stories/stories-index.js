@@ -2,5 +2,6 @@
 window.NS_STORY_FILES = [
   "stories/atik-dadu.js",
   "stories/rashed.js",
-    "stories/unknown-guardian.js"
+  "stories/unknown-guardian.js",
+  "stories/tank-inside.js"
 ];
