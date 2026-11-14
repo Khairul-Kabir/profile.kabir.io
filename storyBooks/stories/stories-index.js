@@ -4,5 +4,6 @@ window.NS_STORY_FILES = [
   "stories/rashed.js",
   "stories/unknown-guardian.js",
   "stories/tank-inside.js",
-  "stories/folded-glasses.js"
+  "stories/folded-glasses.js",
+  "stories/chaya-shikari.js"
 ];
